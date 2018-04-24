@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+package tracer;
+
+service TracerService {
+}
