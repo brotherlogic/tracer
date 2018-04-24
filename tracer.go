@@ -17,6 +17,7 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
+	calls []*pb.ContextCall
 }
 
 // Init builds the server

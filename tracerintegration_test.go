@@ -1,0 +1,28 @@
+package main
+
+import (
+	"context"
+	"testing"
+	"time"
+
+	pb "github.com/brotherlogic/tracer/proto"
+)
+
+func TestSimpleFlow(t *testing.T) {
+	s := InitTestServer()
+
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_START, Timestamp: time.Now().Unix()}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_MARKER, Timestamp: time.Now().Unix() + 2}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_END, Timestamp: time.Now().Unix() + 3}})
+
+	resp, err := s.Trace(context.Background(), &pb.TraceRequest{Creator: "Dave"})
+
+	if err != nil {
+		t.Fatalf("Error running trace: %v", err)
+	}
+
+	if len(resp.Calls) != 1 || len(resp.Calls[0].Milestones) != 3 {
+		t.Errorf("Wrong number of calls/milestones: %v", resp)
+	}
+
+}
