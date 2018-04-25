@@ -2,5 +2,52 @@ syntax = "proto3";
 
 package tracer;
 
+message ContextProperties {
+  string id = 1;
+  int64 created = 2;
+  int64 died = 3;
+  string creator = 4;
+  string label = 5;
+}
+
+message Milestone {
+  enum MilestoneType {
+    UNKNOWN = 0;
+    START = 1;
+    START_FUNCTION = 2;
+    END_FUNCTION = 3;
+    END = 4;
+    MARKER = 5;
+  }
+    
+  string label = 2;
+  int64 timestamp = 3;
+  string origin = 4;
+  MilestoneType type = 5;
+}
+
+message ContextCall {
+  ContextProperties properties = 1;
+  repeated Milestone milestones = 2;
+}
+
+message RecordRequest {
+  ContextProperties properties = 1;
+  Milestone milestone = 2;
+}
+
+message RecordResponse {}
+
+message TraceRequest{
+  string creator = 1;
+  string label = 2;
+}
+
+message TraceResponse {
+  repeated ContextCall calls = 1;
+}
+
 service TracerService {
+  rpc Record(RecordRequest) returns (RecordResponse) {};
+  rpc Trace(TraceRequest) returns (TraceResponse) {};
 }
