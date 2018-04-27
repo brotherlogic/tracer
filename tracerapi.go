@@ -35,9 +35,7 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResponse, error) {
 	resp := &pb.TraceResponse{Calls: make([]*pb.ContextCall, 0)}
 	for _, call := range s.calls {
-		if call.Properties.Label == req.Label || len(call.Properties.Label) == 0 {
-			resp.Calls = append(resp.Calls, call)
-		}
+		resp.Calls = append(resp.Calls, call)
 	}
 
 	return resp, nil
