@@ -23,6 +23,7 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 		call := &pb.ContextCall{Properties: req.Properties, Milestones: []*pb.Milestone{req.Milestone}}
 		if req.Milestone.Type == pb.Milestone_START {
 			call.Properties.Created = req.Milestone.Timestamp
+			call.Properties.Label = req.Milestone.Origin
 		}
 
 		s.calls = append(s.calls, call)

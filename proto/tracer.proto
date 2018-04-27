@@ -6,7 +6,6 @@ message ContextProperties {
   string id = 1;
   int64 created = 2;
   int64 died = 3;
-  string creator = 4;
   string label = 5;
 }
 
