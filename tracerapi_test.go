@@ -17,11 +17,11 @@ func TestInvertedCalls(t *testing.T) {
 	s := InitTestServer()
 	sTime := time.Now().Unix()
 
-	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_MARKER, Timestamp: sTime + 2}})
-	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_START, Timestamp: sTime}})
-	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_END, Timestamp: sTime + 3}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_MARKER, Timestamp: sTime + 2}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_START, Timestamp: sTime}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_END, Timestamp: sTime + 3}})
 
-	resp, err := s.Trace(context.Background(), &pb.TraceRequest{Creator: "Dave"})
+	resp, err := s.Trace(context.Background(), &pb.TraceRequest{Label: "RunTest"})
 
 	if err != nil {
 		t.Fatalf("Error running trace: %v", err)

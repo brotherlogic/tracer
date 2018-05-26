@@ -5,12 +5,18 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strconv"
+	"time"
+
+	"golang.org/x/net/context"
 
 	"github.com/brotherlogic/goserver"
 	"github.com/brotherlogic/keystore/client"
 	"google.golang.org/grpc"
 
+	pbgh "github.com/brotherlogic/githubcard/proto"
 	pbg "github.com/brotherlogic/goserver/proto"
+	"github.com/brotherlogic/goserver/utils"
 	pb "github.com/brotherlogic/tracer/proto"
 )
 
@@ -46,6 +52,23 @@ func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{&pbg.State{Key: "Calls", Value: int64(len(s.calls))}}
 }
 
+func (s *Server) findLongest(ctx context.Context) {
+	longest := s.getLongContextCall()
+	if longest != nil {
+		ip, port, _ := utils.Resolve("githubcard")
+		if port > 0 {
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			defer cancel()
+			conn, err := grpc.Dial(ip+":"+strconv.Itoa(int(port)), grpc.WithInsecure())
+			if err == nil {
+				defer conn.Close()
+				client := pbgh.NewGithubClient(conn)
+				client.AddIssue(ctx, &pbgh.Issue{Service: "tracer", Title: "Long", Body: fmt.Sprintf("%v", longest)}, grpc.FailFast(false))
+			}
+		}
+	}
+}
+
 func main() {
 	var quiet = flag.Bool("quiet", false, "Show all output")
 	flag.Parse()
@@ -61,5 +84,7 @@ func main() {
 	server.Register = server
 
 	server.RegisterServer("tracer", false)
+
+	server.RegisterRepeatingTask(server.findLongest, time.Hour)
 	fmt.Printf("%v\n", server.Serve())
 }
