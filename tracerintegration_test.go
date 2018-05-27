@@ -11,11 +11,11 @@ import (
 func TestSimpleFlow(t *testing.T) {
 	s := InitTestServer()
 
-	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_START, Timestamp: time.Now().Unix()}})
-	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_MARKER, Timestamp: time.Now().Unix() + 2}})
-	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Creator: "Dave", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_END, Timestamp: time.Now().Unix() + 3}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_START, Timestamp: time.Now().Unix()}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_MARKER, Timestamp: time.Now().Unix() + 2}})
+	s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_END, Timestamp: time.Now().Unix() + 3}})
 
-	resp, err := s.Trace(context.Background(), &pb.TraceRequest{Creator: "Dave"})
+	resp, err := s.Trace(context.Background(), &pb.TraceRequest{Label: "RunTest"})
 
 	if err != nil {
 		t.Fatalf("Error running trace: %v", err)

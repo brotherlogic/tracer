@@ -49,7 +49,7 @@ func main() {
 					}
 				}
 			} else {
-				log.Printf("ERROR: %v", err)
+				fmt.Printf("ERROR: %v\n", err)
 			}
 		}
 	}
