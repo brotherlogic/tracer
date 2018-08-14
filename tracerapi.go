@@ -1,10 +1,16 @@
 package main
 
-import "golang.org/x/net/context"
-import pb "github.com/brotherlogic/tracer/proto"
+import (
+	"fmt"
+
+	pb "github.com/brotherlogic/tracer/proto"
+	"golang.org/x/net/context"
+)
 
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
 	found := false
+
+	s.Log(fmt.Sprintf("Received: %v", req.Milestone.Type))
 
 	for _, call := range s.calls {
 		if call.Properties.Id == req.Properties.Id {
