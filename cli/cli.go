@@ -46,7 +46,6 @@ func main() {
 					fmt.Printf("No traces found!\n")
 				}
 				for _, call := range list.Calls {
-					log.Printf("%v", call.Properties)
 					fmt.Printf("%v [%v] \n", call.Properties.Label, (call.Properties.Died-call.Properties.Created)/1000000)
 					for _, m := range call.Milestones {
 						fmt.Printf("  [%v] - %v (%v)\n", (m.Timestamp-call.Properties.Created)/1000000, m.Label, m.Type)
