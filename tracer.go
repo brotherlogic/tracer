@@ -52,6 +52,15 @@ func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{&pbg.State{Key: "Calls", Value: int64(len(s.calls))}}
 }
 
+func (s *Server) buildLong(call *pb.ContextCall) string {
+	retstring := fmt.Sprintf("%v - %v\n", call.GetProperties().Id, call.Properties.Died-call.Properties.Created)
+	for _, m := range call.GetMilestones() {
+		retstring += fmt.Sprintf("[%v] - %v\n", m.GetTimestamp()-call.Properties.Created, m.Label)
+	}
+
+	return retstring
+}
+
 func (s *Server) findLongest(ctx context.Context) {
 	longest := s.getLongContextCall()
 	if longest != nil {
@@ -63,7 +72,7 @@ func (s *Server) findLongest(ctx context.Context) {
 			if err == nil {
 				defer conn.Close()
 				client := pbgh.NewGithubClient(conn)
-				client.AddIssue(ctx, &pbgh.Issue{Service: "tracer", Title: "Long", Body: fmt.Sprintf("%v", longest)}, grpc.FailFast(false))
+				client.AddIssue(ctx, &pbgh.Issue{Service: "tracer", Title: "Long", Body: fmt.Sprintf("%v", s.buildLong(longest))}, grpc.FailFast(false))
 			}
 		}
 	}

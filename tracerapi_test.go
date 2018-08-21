@@ -10,6 +10,7 @@ import (
 
 func InitTestServer() *Server {
 	s := Init()
+	s.SkipLog = true
 	return s
 }
 
