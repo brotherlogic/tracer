@@ -72,7 +72,7 @@ func (s *Server) findLongest(ctx context.Context) {
 			if err == nil {
 				defer conn.Close()
 				client := pbgh.NewGithubClient(conn)
-				client.AddIssue(ctx, &pbgh.Issue{Service: "tracer", Title: "Long", Body: fmt.Sprintf("%v", s.buildLong(longest))}, grpc.FailFast(false))
+				client.AddIssue(ctx, &pbgh.Issue{Service: longest.Properties.Origin, Title: "Long", Body: fmt.Sprintf("%v", s.buildLong(longest))}, grpc.FailFast(false))
 			}
 		}
 	}
