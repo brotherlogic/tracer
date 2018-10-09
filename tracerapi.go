@@ -9,14 +9,16 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 	found := false
 
 	for _, call := range s.calls {
-		if call.Properties.Id == req.Properties.Id {
-			found = true
-			call.Milestones = append(call.Milestones, req.Milestone)
-			if req.Milestone.Type == pb.Milestone_END {
-				call.Properties.Died = req.Milestone.Timestamp
-			}
-			if req.Milestone.Type == pb.Milestone_START {
-				call.Properties.Created = req.Milestone.Timestamp
+		if call.Properties != nil && req.Properties != nil {
+			if call.Properties.Id == req.Properties.Id {
+				found = true
+				call.Milestones = append(call.Milestones, req.Milestone)
+				if req.Milestone.Type == pb.Milestone_END {
+					call.Properties.Died = req.Milestone.Timestamp
+				}
+				if req.Milestone.Type == pb.Milestone_START {
+					call.Properties.Created = req.Milestone.Timestamp
+				}
 			}
 		}
 	}
