@@ -66,8 +66,6 @@ func (s *Server) findLongest(ctx context.Context) {
 	if longest != nil && (longest.Properties.Died-longest.Properties.Created)/1000000 > 500 {
 		ip, port, _ := utils.Resolve("githubcard")
 		if port > 0 {
-			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-			defer cancel()
 			conn, err := grpc.Dial(ip+":"+strconv.Itoa(int(port)), grpc.WithInsecure())
 			if err == nil {
 				defer conn.Close()
