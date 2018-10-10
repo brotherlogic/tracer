@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -12,6 +11,7 @@ import (
 	"github.com/brotherlogic/goserver/utils"
 	"google.golang.org/grpc"
 
+	pbgs "github.com/brotherlogic/goserver/proto"
 	pb "github.com/brotherlogic/tracer/proto"
 
 	//Needed to pull in gzip encoding init
@@ -31,7 +31,7 @@ func main() {
 	}
 
 	client := pb.NewTracerServiceClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	ctx, cancel := utils.BuildContext("tracercli-"+os.Args[1], "tracer", pbgs.ContextType_MEDIUM)
 	defer cancel()
 
 	switch os.Args[1] {
@@ -56,5 +56,5 @@ func main() {
 			}
 		}
 	}
-
+	utils.SendTrace(ctx, "tracercli-"+os.Args[1], time.Now(), pb.Milestone_END, "tracer")
 }
