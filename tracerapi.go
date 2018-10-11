@@ -9,6 +9,7 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 	found := false
 
 	for _, call := range s.calls {
+		//The line below seems to be crashing
 		if call.Properties != nil && req.Properties != nil {
 			if call.Properties.Id == req.Properties.Id {
 				found = true
