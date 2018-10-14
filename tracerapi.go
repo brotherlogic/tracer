@@ -1,12 +1,16 @@
 package main
 
 import (
+	"fmt"
+	"time"
+
 	pb "github.com/brotherlogic/tracer/proto"
 	"golang.org/x/net/context"
 )
 
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
+	t := time.Now()
 	s.callMapMutex.Lock()
 	s.callMap[req.Properties.Origin]++
 	s.callMapMutex.Unlock()
@@ -33,6 +37,7 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 		s.calls[req.Properties.Id] = call
 	}
 
+	s.Log(fmt.Sprintf("TOOK %v", time.Now().Sub(t)))
 	return &pb.RecordResponse{}, nil
 }
 
