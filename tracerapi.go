@@ -11,9 +11,6 @@ import (
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
 	t := time.Now()
-	s.callMapMutex.Lock()
-	s.callMap[req.Properties.Origin]++
-	s.callMapMutex.Unlock()
 
 	s.callsMutex.Lock()
 	call, ok := s.calls[req.Properties.Id]

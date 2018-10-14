@@ -24,10 +24,8 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls        map[string]*pb.ContextCall
-	callsMutex   *sync.Mutex
-	callMap      map[string]int
-	callMapMutex *sync.Mutex
+	calls      map[string]*pb.ContextCall
+	callsMutex *sync.Mutex
 }
 
 // Init builds the server
@@ -35,8 +33,6 @@ func Init() *Server {
 	s := &Server{
 		&goserver.GoServer{},
 		make(map[string]*pb.ContextCall),
-		&sync.Mutex{},
-		make(map[string]int),
 		&sync.Mutex{},
 	}
 	return s
@@ -59,11 +55,8 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
-	s.callMapMutex.Lock()
-	defer s.callMapMutex.Unlock()
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
-		&pbg.State{Key: "call_map", Text: fmt.Sprintf("%v", s.callMap)},
 	}
 }
 
