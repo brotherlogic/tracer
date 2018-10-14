@@ -101,5 +101,6 @@ func main() {
 	server.RegisterServer("tracer", false)
 
 	server.RegisterRepeatingTask(server.findLongest, "find_longest", time.Hour)
+	server.Log("Tracer is starting!")
 	fmt.Printf("%v\n", server.Serve())
 }
