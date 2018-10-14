@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
+
 	pb "github.com/brotherlogic/tracer/proto"
 	"golang.org/x/net/context"
 )
 
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
+	s.Log(fmt.Sprintf("RECORDING %v and %v -> %v", req.Properties.Origin, req.Properties.Label, req.Milestone.Label))
 	found := false
 	s.callMapMutex.Lock()
 	s.callMap[req.Properties.Origin]++
