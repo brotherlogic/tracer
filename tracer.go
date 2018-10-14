@@ -24,7 +24,8 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls        []*pb.ContextCall
+	calls        map[string]*pb.ContextCall
+	callsMutex   *sync.Mutex
 	callMap      map[string]int
 	callMapMutex *sync.Mutex
 }
@@ -33,7 +34,8 @@ type Server struct {
 func Init() *Server {
 	s := &Server{
 		&goserver.GoServer{},
-		[]*pb.ContextCall{},
+		make(map[string]*pb.ContextCall),
+		&sync.Mutex{},
 		make(map[string]int),
 		&sync.Mutex{},
 	}
@@ -52,7 +54,6 @@ func (s *Server) ReportHealth() bool {
 
 // Mote promotes/demotes this server
 func (s *Server) Mote(ctx context.Context, master bool) error {
-	log.Printf("MOTING: %v", master)
 	return nil
 }
 
