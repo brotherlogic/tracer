@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"strconv"
+	"sync"
 	"time"
 
 	"golang.org/x/net/context"
@@ -23,8 +24,9 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls   []*pb.ContextCall
-	callMap map[string]int
+	calls        []*pb.ContextCall
+	callMap      map[string]int
+	callMapMutex *sync.Mutex
 }
 
 // Init builds the server
@@ -33,6 +35,7 @@ func Init() *Server {
 		&goserver.GoServer{},
 		[]*pb.ContextCall{},
 		make(map[string]int),
+		&sync.Mutex{},
 	}
 	return s
 }
@@ -49,11 +52,14 @@ func (s *Server) ReportHealth() bool {
 
 // Mote promotes/demotes this server
 func (s *Server) Mote(ctx context.Context, master bool) error {
+	log.Printf("MOTING: %v", master)
 	return nil
 }
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
+	s.callMapMutex.Lock()
+	defer s.callMapMutex.Unlock()
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "call_map", Text: fmt.Sprintf("%v", s.callMap)},
