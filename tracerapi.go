@@ -16,9 +16,9 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 	s.callMapMutex.Unlock()
 
 	s.callsMutex.Lock()
-	defer s.callsMutex.Unlock()
 	call, ok := s.calls[req.Properties.Id]
 	if ok {
+		s.callsMutex.Unlock()
 		call.Milestones = append(call.Milestones, req.Milestone)
 		if req.Milestone.Type == pb.Milestone_END {
 			call.Properties.Died = req.Milestone.Timestamp
@@ -35,6 +35,7 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 		}
 
 		s.calls[req.Properties.Id] = call
+		s.callsMutex.Unlock()
 	}
 
 	s.Log(fmt.Sprintf("TOOK %v", time.Now().Sub(t)))
