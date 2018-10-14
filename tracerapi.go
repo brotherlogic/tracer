@@ -5,41 +5,38 @@ import (
 	"golang.org/x/net/context"
 )
 
+// Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
-	found := false
 	s.callMapMutex.Lock()
 	s.callMap[req.Properties.Origin]++
 	s.callMapMutex.Unlock()
 
-	for _, call := range s.calls {
-		//The line below seems to be crashing
-		if call.Properties != nil && req.Properties != nil {
-			if call.Properties.Id == req.Properties.Id {
-				found = true
-				call.Milestones = append(call.Milestones, req.Milestone)
-				if req.Milestone.Type == pb.Milestone_END {
-					call.Properties.Died = req.Milestone.Timestamp
-				}
-				if req.Milestone.Type == pb.Milestone_START {
-					call.Properties.Created = req.Milestone.Timestamp
-				}
-			}
+	s.callsMutex.Lock()
+	defer s.callsMutex.Unlock()
+	call, ok := s.calls[req.Properties.Id]
+	if ok {
+		call.Milestones = append(call.Milestones, req.Milestone)
+		if req.Milestone.Type == pb.Milestone_END {
+			call.Properties.Died = req.Milestone.Timestamp
 		}
-	}
+		if req.Milestone.Type == pb.Milestone_START {
+			call.Properties.Created = req.Milestone.Timestamp
+		}
 
-	if !found {
+	} else {
 		call := &pb.ContextCall{Properties: req.Properties, Milestones: []*pb.Milestone{req.Milestone}}
 		if req.Milestone.Type == pb.Milestone_START {
 			call.Properties.Created = req.Milestone.Timestamp
 			call.Properties.Label = req.Milestone.Origin
 		}
 
-		s.calls = append(s.calls, call)
+		s.calls[req.Properties.Id] = call
 	}
 
 	return &pb.RecordResponse{}, nil
 }
 
+//Trace pulls out a trace
 func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResponse, error) {
 	resp := &pb.TraceResponse{Calls: make([]*pb.ContextCall, 0)}
 	for _, call := range s.calls {
