@@ -17,20 +17,8 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 	if ok {
 		s.callsMutex.Unlock()
 		call.Milestones = append(call.Milestones, req.Milestone)
-		if req.Milestone.Type == pb.Milestone_END {
-			call.Properties.Died = req.Milestone.Timestamp
-		}
-		if req.Milestone.Type == pb.Milestone_START {
-			call.Properties.Created = req.Milestone.Timestamp
-		}
-
 	} else {
 		call := &pb.ContextCall{Properties: req.Properties, Milestones: []*pb.Milestone{req.Milestone}}
-		if req.Milestone.Type == pb.Milestone_START {
-			call.Properties.Created = req.Milestone.Timestamp
-			call.Properties.Label = req.Milestone.Origin
-		}
-
 		s.calls[req.Properties.Id] = call
 		s.callsMutex.Unlock()
 	}
