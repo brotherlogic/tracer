@@ -7,6 +7,7 @@ import (
 
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
 	found := false
+	s.callMap[req.Properties.Origin]++
 
 	for _, call := range s.calls {
 		//The line below seems to be crashing

@@ -23,12 +23,17 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls []*pb.ContextCall
+	calls   []*pb.ContextCall
+	callMap map[string]int
 }
 
 // Init builds the server
 func Init() *Server {
-	s := &Server{GoServer: &goserver.GoServer{}}
+	s := &Server{
+		&goserver.GoServer{},
+		[]*pb.ContextCall{},
+		make(map[string]int),
+	}
 	return s
 }
 
@@ -49,7 +54,10 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
-	return []*pbg.State{&pbg.State{Key: "calls", Value: int64(len(s.calls))}}
+	return []*pbg.State{
+		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
+		&pbg.State{Key: "call_map", Text: fmt.Sprintf("%v", s.callMap)},
+	}
 }
 
 func (s *Server) buildLong(call *pb.ContextCall) string {
