@@ -9,16 +9,14 @@ import (
 	"sync"
 	"time"
 
-	"golang.org/x/net/context"
-
-	"github.com/brotherlogic/goserver"
-	"github.com/brotherlogic/keystore/client"
-	"google.golang.org/grpc"
-
 	pbgh "github.com/brotherlogic/githubcard/proto"
+	"github.com/brotherlogic/goserver"
 	pbg "github.com/brotherlogic/goserver/proto"
 	"github.com/brotherlogic/goserver/utils"
+	"github.com/brotherlogic/keystore/client"
 	pb "github.com/brotherlogic/tracer/proto"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 //Server main server type
