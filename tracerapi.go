@@ -1,16 +1,12 @@
 package main
 
 import (
-	"fmt"
-
 	pb "github.com/brotherlogic/tracer/proto"
 	"golang.org/x/net/context"
 )
 
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
-	s.Log(fmt.Sprintf("RUNNING %v - %v", req.Properties.Origin, req.Properties.Label))
-
 	s.callsMutex.Lock()
 	call, ok := s.calls[req.Properties.Id]
 	if ok {
