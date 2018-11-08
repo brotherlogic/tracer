@@ -53,8 +53,15 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
+	count := 0
+	for _, c := range s.calls {
+		if c.Properties.Died == 0 && c.Properties.Created == 0 {
+			count++
+		}
+	}
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
+		&pbg.State{Key: "unfinished_calls", Value: int64(count)},
 	}
 }
 
