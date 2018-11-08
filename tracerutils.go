@@ -1,8 +1,12 @@
 package main
 
-import pb "github.com/brotherlogic/tracer/proto"
+import (
+	"golang.org/x/net/context"
 
-func (s *Server) getLongContextCall() *pb.ContextCall {
+	pb "github.com/brotherlogic/tracer/proto"
+)
+
+func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 	var rcall *pb.ContextCall
 	longest := int64(0)
 	s.callsMutex.Lock()
@@ -14,6 +18,8 @@ func (s *Server) getLongContextCall() *pb.ContextCall {
 				rcall = call
 				longest = took
 			}
+		} else {
+			s.RaiseIssue(ctx, "Unfinished call", "This call is unfinished", false)
 		}
 	}
 	return rcall
