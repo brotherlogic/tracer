@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"golang.org/x/net/context"
@@ -16,7 +15,6 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 	s.callsMutex.Lock()
 	defer s.callsMutex.Unlock()
 	for _, call := range s.calls {
-		log.Printf("HERE: %v", call.Properties)
 		if call.Properties.Died == 0 || call.Properties.Created == 0 {
 			for _, m := range call.Milestones {
 				if m.Type == pb.Milestone_START {
