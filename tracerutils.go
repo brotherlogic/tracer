@@ -17,11 +17,13 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 	for _, call := range s.calls {
 		if call.Properties.Died == 0 || call.Properties.Created == 0 {
 			for _, m := range call.Milestones {
-				if m.Type == pb.Milestone_START {
-					call.Properties.Created = m.Timestamp
-				}
-				if m.Type == pb.Milestone_END {
-					call.Properties.Died = m.Timestamp
+				if m != nil {
+					if m.Type == pb.Milestone_START {
+						call.Properties.Created = m.Timestamp
+					}
+					if m.Type == pb.Milestone_END {
+						call.Properties.Died = m.Timestamp
+					}
 				}
 			}
 		}
