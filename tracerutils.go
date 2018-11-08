@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"golang.org/x/net/context"
 
@@ -34,7 +35,15 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 				longest = took
 			}
 		} else {
-			s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v is unfinished", call.Properties.Label), false)
+			minTime := time.Now().Unix()
+			for _, m := range call.Milestones {
+				if m.Timestamp < minTime {
+					minTime = m.Timestamp
+				}
+			}
+			if time.Now().Sub(time.Unix(minTime, 0)) > time.Hour {
+				s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v is unfinished", call.Properties.Label), false)
+			}
 		}
 	}
 	return rcall
