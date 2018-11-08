@@ -21,7 +21,7 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 				longest = took
 			}
 		} else {
-			s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v is unfinished", call.Label), false)
+			s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v is unfinished", call.Properties.Label), false)
 		}
 	}
 	return rcall
