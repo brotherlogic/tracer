@@ -53,6 +53,9 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
+	s.callsMutex.Lock()
+	defer s.callsMutex.Unlock()
+
 	count := 0
 	for _, c := range s.calls {
 		if c.Properties.Died == 0 && c.Properties.Created == 0 {
