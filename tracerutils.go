@@ -37,8 +37,10 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 		} else {
 			minTime := time.Now().Unix()
 			for _, m := range call.Milestones {
-				if m.Timestamp < minTime {
-					minTime = m.Timestamp
+				if m != nil {
+					if m.Timestamp < minTime {
+						minTime = m.Timestamp
+					}
 				}
 			}
 			if time.Now().Sub(time.Unix(minTime, 0)) > time.Hour {
