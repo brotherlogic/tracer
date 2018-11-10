@@ -10,6 +10,7 @@ import (
 )
 
 func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
+	s.Log("Getting a long context call")
 	var rcall *pb.ContextCall
 	longest := int64(0)
 	s.callsMutex.Lock()
