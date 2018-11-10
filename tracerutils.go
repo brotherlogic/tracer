@@ -10,7 +10,6 @@ import (
 )
 
 func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
-	s.Log("Getting a long context call")
 	var rcall *pb.ContextCall
 	longest := int64(0)
 	s.callsMutex.Lock()
@@ -36,7 +35,7 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 				longest = took
 			}
 		} else {
-			minTime := time.Now().Unix()
+			minTime := time.Now().UnixNano()
 			for _, m := range call.Milestones {
 				if m != nil {
 					if m.Timestamp < minTime {
@@ -45,8 +44,7 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 				}
 			}
 
-			s.Log(fmt.Sprintf("Let's see %v -> %v,%v,%v", len(call.Milestones), time.Now(), time.Unix(minTime, 0), call))
-			if time.Now().Sub(time.Unix(minTime, 0)) > time.Minute {
+			if time.Now().Sub(time.Unix(0, minTime)) > time.Minute {
 				s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v is unfinished", call.Properties.Label), false)
 			}
 		}
