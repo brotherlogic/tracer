@@ -1,4 +1,4 @@
-unifpackage main
+package main
 
 import (
 	"fmt"
@@ -44,7 +44,7 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 				}
 			}
 
-			if time.Now().Sub(time.Unix(0, minTime)) > time.Minute * 5 {
+			if time.Now().Sub(time.Unix(0, minTime)) > time.Minute*5 {
 				s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v is unfinished", call.Properties.Label), false)
 			}
 		}
