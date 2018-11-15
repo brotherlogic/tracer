@@ -45,7 +45,7 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 			}
 
 			if time.Now().Sub(time.Unix(0, minTime)) > time.Minute*5 {
-				s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v is unfinished", call.Properties.Label), false)
+				s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v from %v is unfinished (%v milestones)", call.Properties.Label, call.Properties.Origin, len(call.Milestones)), false)
 			}
 		}
 	}
