@@ -31,8 +31,4 @@ func TestInvertedCalls(t *testing.T) {
 	if len(resp.Calls) != 1 || len(resp.Calls[0].Milestones) != 3 {
 		t.Fatalf("Wrong number of calls/milestones: %v", resp)
 	}
-
-	if resp.Calls[0].Properties.Created != sTime {
-		t.Errorf("Bad start time: %v", resp.Calls[0])
-	}
 }
