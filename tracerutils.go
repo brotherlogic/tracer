@@ -14,6 +14,9 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 	longest := int64(0)
 	s.callsMutex.Lock()
 	defer s.callsMutex.Unlock()
+	finishedCalls := make(map[string]int)
+	unfinishedCalls := make(map[string]int)
+
 	for _, call := range s.calls {
 		if call.Properties.Died == 0 || call.Properties.Created == 0 {
 			for _, m := range call.Milestones {
@@ -29,12 +32,20 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 		}
 
 		if call.Properties.Died > 0 && call.Properties.Created > 0 {
+			finishedCalls[call.Properties.Label]++
 			took := call.Properties.Died - call.Properties.Created
 			if took > longest {
 				rcall = call
 				longest = took
 			}
 		} else {
+			unfinishedCalls[call.Properties.Label]++
+		}
+	}
+
+	// Look for unfinished calls
+	for _, call := range s.calls {
+		if unfinishedCalls[call.Properties.Label] > 0 && finishedCalls[call.Properties.Label] == 0 {
 			minTime := time.Now().UnixNano()
 			for _, m := range call.Milestones {
 				if m != nil {
@@ -55,5 +66,6 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 			}
 		}
 	}
+
 	return rcall
 }
