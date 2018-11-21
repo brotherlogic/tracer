@@ -23,6 +23,9 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 				if m != nil {
 					if m.Type == pb.Milestone_START {
 						call.Properties.Created = m.Timestamp
+						if call.Properties.Label == "" {
+							call.Properties.Label = m.Label
+						}
 					}
 					if m.Type == pb.Milestone_END {
 						call.Properties.Died = m.Timestamp
