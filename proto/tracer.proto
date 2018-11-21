@@ -8,6 +8,7 @@ message ContextProperties {
   int64 died = 3;
   string origin = 4;
   string label = 5;
+  bool delivered = 6;
 }
 
 message Milestone {
