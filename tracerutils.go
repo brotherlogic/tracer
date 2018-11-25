@@ -51,25 +51,27 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 	// Look for unfinished calls
 	for _, call := range s.calls {
 		if unfinishedCalls[call.Properties.Label] > 0 && finishedCalls[call.Properties.Label] == 0 {
-			minTime := time.Now().UnixNano()
-			for _, m := range call.Milestones {
-				if m != nil {
-					if m.Timestamp < minTime {
-						minTime = m.Timestamp
-					}
-				}
-			}
-
-			if time.Now().Sub(time.Unix(0, minTime)) > time.Minute*5 {
-				betterLabel := ""
-				milestones := ""
+			if call.Properties.Died == 0 || call.Properties.Created == 0 {
+				minTime := time.Now().UnixNano()
 				for _, m := range call.Milestones {
-					if len(m.Label) > len(betterLabel) {
-						betterLabel = m.Label
+					if m != nil {
+						if m.Timestamp < minTime {
+							minTime = m.Timestamp
+						}
 					}
-					milestones += fmt.Sprintf("%v, ", m.Type)
 				}
-				s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v from %v is unfinished (%v milestones = %v) -> %v (%v and %v)", call.Properties.Label, call.Properties.Origin, len(call.Milestones), milestones, betterLabel, call.Properties.Created, call.Properties.Died), false)
+
+				if time.Now().Sub(time.Unix(0, minTime)) > time.Minute*5 {
+					betterLabel := ""
+					milestones := ""
+					for _, m := range call.Milestones {
+						if len(m.Label) > len(betterLabel) {
+							betterLabel = m.Label
+						}
+						milestones += fmt.Sprintf("%v, ", m.Type)
+					}
+					s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v from %v is unfinished (%v milestones = %v) -> %v (%v and %v)", call.Properties.Label, call.Properties.Origin, len(call.Milestones), milestones, betterLabel, call.Properties.Created, call.Properties.Died), false)
+				}
 			}
 		}
 	}
