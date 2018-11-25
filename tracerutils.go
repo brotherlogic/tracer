@@ -34,12 +34,14 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 			}
 		}
 
-		if call.Properties.Died > 0 && call.Properties.Created > 0 && !call.Properties.Delivered {
-			finishedCalls[call.Properties.Label]++
-			took := call.Properties.Died - call.Properties.Created
-			if took > longest {
-				rcall = call
-				longest = took
+		if call.Properties.Died > 0 && call.Properties.Created > 0 {
+			if !call.Properties.Delivered {
+				finishedCalls[call.Properties.Label]++
+				took := call.Properties.Died - call.Properties.Created
+				if took > longest {
+					rcall = call
+					longest = took
+				}
 			}
 		} else {
 			unfinishedCalls[call.Properties.Label]++
