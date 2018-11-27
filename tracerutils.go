@@ -70,7 +70,9 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 						}
 						milestones += fmt.Sprintf("%v, ", m.Type)
 					}
-					s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v from %v is unfinished (%v milestones = %v) -> %v (%v and %v)", call.Properties.Label, call.Properties.Origin, len(call.Milestones), milestones, betterLabel, call.Properties.Created, call.Properties.Died), false)
+					if call.Properties.Died == 0 || call.Properties.Created == 0 {
+						s.RaiseIssue(ctx, "Unfinished call", fmt.Sprintf("The call for %v from %v is unfinished (%v milestones = %v) -> %v (%v and %v)", call.Properties.Label, call.Properties.Origin, len(call.Milestones), milestones, betterLabel, call.Properties.Created, call.Properties.Died), false)
+					}
 				}
 			}
 		}
