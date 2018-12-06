@@ -65,7 +65,7 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 					betterLabel := ""
 					milestones := ""
 					for _, m := range call.Milestones {
-						if len(m.Label) > len(betterLabel) {
+						if m != nil && len(m.Label) > len(betterLabel) {
 							betterLabel = m.Label
 						}
 						milestones += fmt.Sprintf("%v, ", m.Type)
