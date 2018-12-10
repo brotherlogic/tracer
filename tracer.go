@@ -22,8 +22,9 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls      map[string]*pb.ContextCall
-	callsMutex *sync.Mutex
+	calls          map[string]*pb.ContextCall
+	callsMutex     *sync.Mutex
+	silencedAlerts int
 }
 
 // Init builds the server
@@ -32,6 +33,7 @@ func Init() *Server {
 		&goserver.GoServer{},
 		make(map[string]*pb.ContextCall),
 		&sync.Mutex{},
+		0,
 	}
 	return s
 }
@@ -65,6 +67,7 @@ func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "unfinished_calls", Value: int64(count)},
+		&pbg.State{Key: "silenced_alerts", Value: int64(s.silencedAlerts)},
 	}
 }
 
