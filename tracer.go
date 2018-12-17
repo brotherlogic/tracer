@@ -22,9 +22,11 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls          map[string]*pb.ContextCall
-	callsMutex     *sync.Mutex
-	silencedAlerts int
+	calls            map[string]*pb.ContextCall
+	callsMutex       *sync.Mutex
+	silencedAlerts   int
+	whitelist        []string
+	longestDelivered int64
 }
 
 // Init builds the server
@@ -34,6 +36,8 @@ func Init() *Server {
 		make(map[string]*pb.ContextCall),
 		&sync.Mutex{},
 		0,
+		[]string{"dropboxsync"},
+		int64(0),
 	}
 	return s
 }
@@ -68,6 +72,8 @@ func (s *Server) GetState() []*pbg.State {
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "unfinished_calls", Value: int64(count)},
 		&pbg.State{Key: "silenced_alerts", Value: int64(s.silencedAlerts)},
+		&pbg.State{Key: "num_whitelisted", Value: int64(len(s.whitelist))},
+		&pbg.State{Key: "longest_delivered", Value: s.longestDelivered},
 	}
 }
 
@@ -82,7 +88,7 @@ func (s *Server) buildLong(call *pb.ContextCall) string {
 
 func (s *Server) findLongest(ctx context.Context) {
 	longest := s.getLongContextCall(ctx)
-	if longest != nil && (longest.Properties.Died-longest.Properties.Created)/1000000 > 500 {
+	if longest != nil && (longest.Properties.Died-longest.Properties.Created)/1000000 >= 0 {
 		ip, port, _ := utils.Resolve("githubcard")
 		if port > 0 {
 			conn, err := grpc.Dial(ip+":"+strconv.Itoa(int(port)), grpc.WithInsecure())
@@ -91,6 +97,7 @@ func (s *Server) findLongest(ctx context.Context) {
 				client := pbgh.NewGithubClient(conn)
 				client.AddIssue(ctx, &pbgh.Issue{Service: longest.Properties.Origin, Title: "Long", Body: fmt.Sprintf("%v", s.buildLong(longest))}, grpc.FailFast(false))
 				longest.Properties.Delivered = true
+				s.longestDelivered++
 			}
 		}
 	}

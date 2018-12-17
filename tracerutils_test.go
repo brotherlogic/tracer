@@ -9,7 +9,8 @@ import (
 
 func TestLongContextCall(t *testing.T) {
 	s := InitTestServer()
-	s.calls["madeup"] = &pb.ContextCall{Properties: &pb.ContextProperties{Created: 10, Died: 20}}
+	s.whitelist = append(s.whitelist, "madeup")
+	s.calls["madeup"] = &pb.ContextCall{Properties: &pb.ContextProperties{Created: 10, Died: 20, Origin: "madeup"}}
 	l := s.getLongContextCall(context.Background())
 
 	if l.GetProperties().Created != 10 {
@@ -17,9 +18,20 @@ func TestLongContextCall(t *testing.T) {
 	}
 }
 
+func TestLongContextCallWithFailure(t *testing.T) {
+	s := InitTestServer()
+	s.calls["madeup"] = &pb.ContextCall{Properties: &pb.ContextProperties{Created: 10, Died: 20, Origin: "madeup"}}
+	l := s.getLongContextCall(context.Background())
+
+	if l != nil {
+		t.Errorf("Found a context call despite whitelist")
+	}
+}
+
 func TestLongContextCallWithBuild(t *testing.T) {
 	s := InitTestServer()
-	s.calls["madeup"] = &pb.ContextCall{Milestones: []*pb.Milestone{&pb.Milestone{Label: "blah", Type: pb.Milestone_START, Timestamp: 10}, &pb.Milestone{Label: "blah", Type: pb.Milestone_END, Timestamp: 20}}, Properties: &pb.ContextProperties{}}
+	s.whitelist = append(s.whitelist, "madeup")
+	s.calls["madeup"] = &pb.ContextCall{Milestones: []*pb.Milestone{&pb.Milestone{Label: "blah", Type: pb.Milestone_START, Timestamp: 10}, &pb.Milestone{Label: "blah", Type: pb.Milestone_END, Timestamp: 20}}, Properties: &pb.ContextProperties{Origin: "madeup"}}
 	l := s.getLongContextCall(context.Background())
 
 	if l.GetProperties().Created != 10 {
@@ -29,6 +41,7 @@ func TestLongContextCallWithBuild(t *testing.T) {
 
 func TestLongContextCallWithBuildNoFinish(t *testing.T) {
 	s := InitTestServer()
+	s.whitelist = append(s.whitelist, "madeup")
 	s.calls["madeup"] = &pb.ContextCall{Milestones: []*pb.Milestone{&pb.Milestone{Label: "blah", Type: pb.Milestone_START, Timestamp: 10}}, Properties: &pb.ContextProperties{}}
 	l := s.getLongContextCall(context.Background())
 

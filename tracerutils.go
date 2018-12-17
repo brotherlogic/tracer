@@ -9,6 +9,16 @@ import (
 	pb "github.com/brotherlogic/tracer/proto"
 )
 
+func (s *Server) inWhitelist(name string) bool {
+	for _, n := range s.whitelist {
+		if name == n {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 	var rcall *pb.ContextCall
 	longest := int64(0)
@@ -38,7 +48,7 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 			if !call.Properties.Delivered {
 				finishedCalls[call.Properties.Label]++
 				took := call.Properties.Died - call.Properties.Created
-				if took > longest {
+				if took > longest && s.inWhitelist(call.Properties.Origin) {
 					rcall = call
 					longest = took
 				}
