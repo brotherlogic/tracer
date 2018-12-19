@@ -88,7 +88,7 @@ func (s *Server) buildLong(call *pb.ContextCall) string {
 
 func (s *Server) findLongest(ctx context.Context) {
 	longest := s.getLongContextCall(ctx)
-	if longest != nil && (longest.Properties.Died-longest.Properties.Created)/1000000 >= 0 {
+	if longest != nil && (longest.Properties.Died-longest.Properties.Created)/1000000 >= 500 {
 		ip, port, _ := utils.Resolve("githubcard")
 		if port > 0 {
 			conn, err := grpc.Dial(ip+":"+strconv.Itoa(int(port)), grpc.WithInsecure())
