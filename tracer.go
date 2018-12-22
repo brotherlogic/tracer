@@ -36,7 +36,7 @@ func Init() *Server {
 		make(map[string]*pb.ContextCall),
 		&sync.Mutex{},
 		0,
-		[]string{"dropboxsync"},
+		[]string{},
 		int64(0),
 	}
 	return s
