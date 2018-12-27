@@ -83,7 +83,7 @@ func (s *Server) GetState() []*pbg.State {
 }
 
 func (s *Server) buildLong(call *pb.ContextCall) string {
-	retstring := fmt.Sprintf("%v - %v\n", call.GetProperties().Id, (call.Properties.Died-call.Properties.Created)/1000000)
+	retstring := fmt.Sprintf("%v - %v\n", call.GetProperties().Id, (call.Properties.Length)/1000000)
 	for _, m := range call.GetMilestones() {
 		retstring += fmt.Sprintf("[%v] - %v (%v)\n", (m.GetTimestamp()-call.Properties.Created)/1000000, m.GetLabel(), m.GetType())
 	}
