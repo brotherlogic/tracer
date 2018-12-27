@@ -49,3 +49,15 @@ func TestLongContextCallWithBuildNoFinish(t *testing.T) {
 		t.Errorf("Wrong long call: %v", l)
 	}
 }
+
+func TestLongContextCallSkipsJumps(t *testing.T) {
+	s := InitTestServer()
+	s.whitelist = append(s.whitelist, "madeup")
+	s.calls["madeup"] = &pb.ContextCall{Properties: &pb.ContextProperties{Created: 10, Died: 20, Origin: "madeup"}}
+	s.calls["madeup2"] = &pb.ContextCall{Properties: &pb.ContextProperties{Created: 15, Died: 200, Origin: "madeup"}, Milestones: []*pb.Milestone{&pb.Milestone{Type: pb.Milestone_START_EXTERNAL, Timestamp: 16}, &pb.Milestone{Type: pb.Milestone_END_EXTERNAL, Timestamp: 199}}}
+	l := s.getLongContextCall(context.Background())
+
+	if l.GetProperties().Created != 10 {
+		t.Errorf("Wrong long call: %v", l)
+	}
+}

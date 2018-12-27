@@ -19,6 +19,8 @@ message Milestone {
     END_FUNCTION = 3;
     END = 4;
     MARKER = 5;
+    START_EXTERNAL = 6;
+    END_EXTERNAL = 7;
   }
     
   string label = 2;
