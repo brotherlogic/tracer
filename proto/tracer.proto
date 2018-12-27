@@ -9,6 +9,7 @@ message ContextProperties {
   string origin = 4;
   string label = 5;
   bool delivered = 6;
+  int64 length = 7;
 }
 
 message Milestone {
