@@ -106,6 +106,8 @@ func (s *Server) findLongest(ctx context.Context) {
 				s.timeOfLongest = time.Duration(longest.Properties.Length)
 			}
 		}
+	} else {
+		s.Log(fmt.Sprintf("Rejecting %v because of length %v", longest.Properties.Origin, longest.Properties.Length))
 	}
 }
 
