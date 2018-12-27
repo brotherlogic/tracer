@@ -27,6 +27,7 @@ type Server struct {
 	silencedAlerts   int
 	whitelist        []string
 	longestDelivered int64
+	timeOfLongest    time.Duration
 }
 
 // Init builds the server
@@ -40,6 +41,7 @@ func Init() *Server {
 			"dropboxsync",
 		},
 		int64(0),
+		0,
 	}
 	return s
 }
@@ -76,6 +78,7 @@ func (s *Server) GetState() []*pbg.State {
 		&pbg.State{Key: "silenced_alerts", Value: int64(s.silencedAlerts)},
 		&pbg.State{Key: "num_whitelisted", Value: int64(len(s.whitelist))},
 		&pbg.State{Key: "longest_delivered", Value: s.longestDelivered},
+		&pbg.State{Key: "time_of_longest", TimeDuration: s.timeOfLongest.Nanoseconds()},
 	}
 }
 
@@ -100,6 +103,7 @@ func (s *Server) findLongest(ctx context.Context) {
 				client.AddIssue(ctx, &pbgh.Issue{Service: longest.Properties.Origin, Title: "Long", Body: fmt.Sprintf("%v", s.buildLong(longest))}, grpc.FailFast(false))
 				longest.Properties.Delivered = true
 				s.longestDelivered++
+				s.timeOfLongest = time.Unix(longest.Properties.Died, 0).Sub(time.Unix(longest.Properties.Created, 0))
 			}
 		}
 	}
