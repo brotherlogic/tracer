@@ -51,11 +51,13 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 				call.Properties.Length = call.Properties.Died - call.Properties.Created
 				sTime := int64(0)
 				for _, milestone := range call.Milestones {
-					if milestone.Type == pb.Milestone_START_EXTERNAL {
-						sTime = milestone.Timestamp
-					} else if milestone.Type == pb.Milestone_END_EXTERNAL {
-						call.Properties.Length -= milestone.Timestamp - sTime
-						sTime = 0
+					if milestone != nil {
+						if milestone.Type == pb.Milestone_START_EXTERNAL {
+							sTime = milestone.Timestamp
+						} else if milestone.Type == pb.Milestone_END_EXTERNAL {
+							call.Properties.Length -= milestone.Timestamp - sTime
+							sTime = 0
+						}
 					}
 				}
 
