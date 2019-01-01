@@ -61,3 +61,18 @@ func TestLongContextCallSkipsJumps(t *testing.T) {
 		t.Errorf("Wrong long call: %v", l)
 	}
 }
+
+func TestLongContextIgnoresUnbalancedCalls(t *testing.T) {
+	s := InitTestServer()
+	s.whitelist = append(s.whitelist, "madeup")
+	s.calls["madeup2"] = &pb.ContextCall{Properties: &pb.ContextProperties{Created: 15, Died: 200, Origin: "madeup"}, Milestones: []*pb.Milestone{&pb.Milestone{Type: pb.Milestone_START_EXTERNAL, Timestamp: 16}}}
+	l := s.getLongContextCall(context.Background())
+
+	if l != nil {
+		t.Errorf("Unbalanced call was returned")
+	}
+
+	if s.unbalanced != 1 {
+		t.Errorf("Unbalanced call was not identified")
+	}
+}

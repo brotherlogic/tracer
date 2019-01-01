@@ -50,20 +50,31 @@ func (s *Server) getLongContextCall(ctx context.Context) *pb.ContextCall {
 
 				call.Properties.Length = call.Properties.Died - call.Properties.Created
 				sTime := int64(0)
+
+				stCount := 0
+				enCount := 0
+
 				for _, milestone := range call.Milestones {
 					if milestone != nil {
 						if milestone.Type == pb.Milestone_START_EXTERNAL {
 							sTime = milestone.Timestamp
+							stCount++
 						} else if milestone.Type == pb.Milestone_END_EXTERNAL {
 							call.Properties.Length -= milestone.Timestamp - sTime
 							sTime = 0
+							enCount++
 						}
 					}
 				}
 
-				if call.Properties.Length > longest && s.inWhitelist(call.Properties.Origin) {
-					rcall = call
-					longest = call.Properties.Length
+				if stCount == enCount {
+
+					if call.Properties.Length > longest && s.inWhitelist(call.Properties.Origin) {
+						rcall = call
+						longest = call.Properties.Length
+					}
+				} else {
+					s.unbalanced++
 				}
 			}
 		} else {

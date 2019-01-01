@@ -28,6 +28,7 @@ type Server struct {
 	whitelist        []string
 	longestDelivered int64
 	timeOfLongest    time.Duration
+	unbalanced       int64
 }
 
 // Init builds the server
@@ -43,6 +44,7 @@ func Init() *Server {
 		},
 		int64(0),
 		0,
+		int64(0), // unbalanced
 	}
 	return s
 }
