@@ -41,6 +41,7 @@ func Init() *Server {
 		[]string{
 			"dropboxsync",
 			"wantslist",
+			"recordprinter",
 		},
 		int64(0),
 		0,
