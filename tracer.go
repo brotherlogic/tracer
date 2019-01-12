@@ -42,6 +42,7 @@ func Init() *Server {
 			"dropboxsync",
 			"wantslist",
 			"recordprinter",
+			"cdprocessor",
 		},
 		int64(0),
 		0,
