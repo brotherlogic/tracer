@@ -114,6 +114,9 @@ func (s *Server) findLongest(ctx context.Context) {
 	} else if longest != nil {
 		s.Log(fmt.Sprintf("Rejecting %v because of length %v", longest.Properties.Origin, longest.Properties.Length))
 	}
+
+	//Wipe the registry clean
+	s.calls = make(map[string]*pb.ContextCall)
 }
 
 func main() {
@@ -132,7 +135,7 @@ func main() {
 
 	server.RegisterServer("tracer", false)
 
-	server.RegisterRepeatingTask(server.findLongest, "find_longest", time.Minute*2)
+	server.RegisterRepeatingTask(server.findLongest, "find_longest", time.Minute*5)
 
 	fmt.Printf("%v\n", server.Serve())
 }
