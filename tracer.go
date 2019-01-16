@@ -43,6 +43,7 @@ func Init() *Server {
 			"wantslist",
 			"recordprinter",
 			"cdprocessor",
+			"backup",
 		},
 		int64(0),
 		0,
