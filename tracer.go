@@ -44,6 +44,7 @@ func Init() *Server {
 			"recordprinter",
 			"cdprocessor",
 			"backup",
+			"printer",
 		},
 		int64(0),
 		0,
