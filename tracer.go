@@ -118,7 +118,11 @@ func (s *Server) findLongest(ctx context.Context) {
 	}
 
 	//Wipe the registry clean
-	s.calls = make(map[string]*pb.ContextCall)
+	s.callsMutex.Lock()
+	for key := range s.calls {
+		delete(s.calls, key)
+	}
+	s.callsMutex.Unlock()
 }
 
 func main() {
