@@ -29,6 +29,7 @@ type Server struct {
 	longestDelivered int64
 	timeOfLongest    time.Duration
 	unbalanced       int64
+	reject           bool
 }
 
 // Init builds the server
@@ -49,6 +50,7 @@ func Init() *Server {
 		int64(0),
 		0,
 		int64(0), // unbalanced
+		true,     // Rejects everything
 	}
 	return s
 }
@@ -86,6 +88,7 @@ func (s *Server) GetState() []*pbg.State {
 		&pbg.State{Key: "num_whitelisted", Value: int64(len(s.whitelist))},
 		&pbg.State{Key: "longest_delivered", Value: s.longestDelivered},
 		&pbg.State{Key: "time_of_longest", TimeDuration: s.timeOfLongest.Nanoseconds()},
+		&pbg.State{Key: "rejecting", Text: fmt.Sprintf("%v", s.reject)},
 	}
 }
 

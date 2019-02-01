@@ -11,7 +11,18 @@ import (
 func InitTestServer() *Server {
 	s := Init()
 	s.SkipLog = true
+	s.reject = false
 	return s
+}
+
+func TestReject(t *testing.T) {
+	s := InitTestServer()
+	s.reject = true
+
+	a, err := s.Record(context.Background(), &pb.RecordRequest{Properties: &pb.ContextProperties{Id: "123", Label: "RunTest"}, Milestone: &pb.Milestone{Type: pb.Milestone_MARKER, Timestamp: time.Now().Unix() + 2}})
+	if err == nil {
+		t.Errorf("Full reject was not rejected: %v", a)
+	}
 }
 
 func TestInvertedCalls(t *testing.T) {

@@ -1,12 +1,18 @@
 package main
 
 import (
+	"fmt"
+
 	pb "github.com/brotherlogic/tracer/proto"
 	"golang.org/x/net/context"
 )
 
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
+	if s.reject {
+		return nil, fmt.Errorf("Rejecting all traces")
+	}
+
 	s.callsMutex.Lock()
 	call, ok := s.calls[req.Properties.Id]
 	if ok {
