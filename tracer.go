@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"sync"
-	"unsafe"
 
 	"github.com/brotherlogic/goserver"
 	pbg "github.com/brotherlogic/goserver/proto"
@@ -58,9 +57,14 @@ func (s *Server) GetState() []*pbg.State {
 	s.callsMutex.Lock()
 	defer s.callsMutex.Unlock()
 
+	count := int64(0)
+	for _, c := range s.calls {
+		count += int64(len(c.Events))
+	}
+
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
-		&pbg.State{Key: "size", Value: int64(unsafe.Sizeof(s.calls))},
+		&pbg.State{Key: "size", Value: count},
 	}
 }
 
