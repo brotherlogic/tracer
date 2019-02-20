@@ -9,30 +9,10 @@ import (
 
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
-	if s.reject {
-		return nil, fmt.Errorf("Rejecting all traces")
-	}
-
-	s.callsMutex.Lock()
-	call, ok := s.calls[req.Properties.Id]
-	if ok {
-		s.callsMutex.Unlock()
-		call.Milestones = append(call.Milestones, req.Milestone)
-	} else {
-		call := &pb.ContextCall{Properties: req.Properties, Milestones: []*pb.Milestone{req.Milestone}}
-		s.calls[req.Properties.Id] = call
-		s.callsMutex.Unlock()
-	}
-
-	return &pb.RecordResponse{}, nil
+	return nil, fmt.Errorf("Not implemented")
 }
 
 //Trace pulls out a trace
 func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResponse, error) {
-	resp := &pb.TraceResponse{Calls: make([]*pb.ContextCall, 0)}
-	for _, call := range s.calls {
-		resp.Calls = append(resp.Calls, call)
-	}
-
-	return resp, nil
+	return nil, fmt.Errorf("Not implemented")
 }

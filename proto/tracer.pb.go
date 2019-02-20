@@ -22,259 +22,112 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-type Milestone_MilestoneType int32
-
-const (
-	Milestone_UNKNOWN        Milestone_MilestoneType = 0
-	Milestone_START          Milestone_MilestoneType = 1
-	Milestone_START_FUNCTION Milestone_MilestoneType = 2
-	Milestone_END_FUNCTION   Milestone_MilestoneType = 3
-	Milestone_END            Milestone_MilestoneType = 4
-	Milestone_MARKER         Milestone_MilestoneType = 5
-	Milestone_START_EXTERNAL Milestone_MilestoneType = 6
-	Milestone_END_EXTERNAL   Milestone_MilestoneType = 7
-)
-
-var Milestone_MilestoneType_name = map[int32]string{
-	0: "UNKNOWN",
-	1: "START",
-	2: "START_FUNCTION",
-	3: "END_FUNCTION",
-	4: "END",
-	5: "MARKER",
-	6: "START_EXTERNAL",
-	7: "END_EXTERNAL",
-}
-
-var Milestone_MilestoneType_value = map[string]int32{
-	"UNKNOWN":        0,
-	"START":          1,
-	"START_FUNCTION": 2,
-	"END_FUNCTION":   3,
-	"END":            4,
-	"MARKER":         5,
-	"START_EXTERNAL": 6,
-	"END_EXTERNAL":   7,
-}
-
-func (x Milestone_MilestoneType) String() string {
-	return proto.EnumName(Milestone_MilestoneType_name, int32(x))
-}
-
-func (Milestone_MilestoneType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_6d422d7c66fbbd8f, []int{1, 0}
-}
-
-type ContextProperties struct {
+type Event struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Created              int64    `protobuf:"varint,2,opt,name=created,proto3" json:"created,omitempty"`
-	Died                 int64    `protobuf:"varint,3,opt,name=died,proto3" json:"died,omitempty"`
-	Origin               string   `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
-	Label                string   `protobuf:"bytes,5,opt,name=label,proto3" json:"label,omitempty"`
-	Delivered            bool     `protobuf:"varint,6,opt,name=delivered,proto3" json:"delivered,omitempty"`
-	Length               int64    `protobuf:"varint,7,opt,name=length,proto3" json:"length,omitempty"`
+	Call                 string   `protobuf:"bytes,2,opt,name=call,proto3" json:"call,omitempty"`
+	Timestamp            int64    `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ContextProperties) Reset()         { *m = ContextProperties{} }
-func (m *ContextProperties) String() string { return proto.CompactTextString(m) }
-func (*ContextProperties) ProtoMessage()    {}
-func (*ContextProperties) Descriptor() ([]byte, []int) {
+func (m *Event) Reset()         { *m = Event{} }
+func (m *Event) String() string { return proto.CompactTextString(m) }
+func (*Event) ProtoMessage()    {}
+func (*Event) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6d422d7c66fbbd8f, []int{0}
 }
 
-func (m *ContextProperties) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContextProperties.Unmarshal(m, b)
+func (m *Event) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Event.Unmarshal(m, b)
 }
-func (m *ContextProperties) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContextProperties.Marshal(b, m, deterministic)
+func (m *Event) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Event.Marshal(b, m, deterministic)
 }
-func (m *ContextProperties) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContextProperties.Merge(m, src)
+func (m *Event) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Event.Merge(m, src)
 }
-func (m *ContextProperties) XXX_Size() int {
-	return xxx_messageInfo_ContextProperties.Size(m)
+func (m *Event) XXX_Size() int {
+	return xxx_messageInfo_Event.Size(m)
 }
-func (m *ContextProperties) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContextProperties.DiscardUnknown(m)
+func (m *Event) XXX_DiscardUnknown() {
+	xxx_messageInfo_Event.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ContextProperties proto.InternalMessageInfo
+var xxx_messageInfo_Event proto.InternalMessageInfo
 
-func (m *ContextProperties) GetId() string {
+func (m *Event) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *ContextProperties) GetCreated() int64 {
+func (m *Event) GetCall() string {
 	if m != nil {
-		return m.Created
-	}
-	return 0
-}
-
-func (m *ContextProperties) GetDied() int64 {
-	if m != nil {
-		return m.Died
-	}
-	return 0
-}
-
-func (m *ContextProperties) GetOrigin() string {
-	if m != nil {
-		return m.Origin
+		return m.Call
 	}
 	return ""
 }
 
-func (m *ContextProperties) GetLabel() string {
-	if m != nil {
-		return m.Label
-	}
-	return ""
-}
-
-func (m *ContextProperties) GetDelivered() bool {
-	if m != nil {
-		return m.Delivered
-	}
-	return false
-}
-
-func (m *ContextProperties) GetLength() int64 {
-	if m != nil {
-		return m.Length
-	}
-	return 0
-}
-
-type Milestone struct {
-	Label                string                  `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
-	Timestamp            int64                   `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Origin               string                  `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
-	Type                 Milestone_MilestoneType `protobuf:"varint,5,opt,name=type,proto3,enum=tracer.Milestone_MilestoneType" json:"type,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *Milestone) Reset()         { *m = Milestone{} }
-func (m *Milestone) String() string { return proto.CompactTextString(m) }
-func (*Milestone) ProtoMessage()    {}
-func (*Milestone) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6d422d7c66fbbd8f, []int{1}
-}
-
-func (m *Milestone) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Milestone.Unmarshal(m, b)
-}
-func (m *Milestone) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Milestone.Marshal(b, m, deterministic)
-}
-func (m *Milestone) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Milestone.Merge(m, src)
-}
-func (m *Milestone) XXX_Size() int {
-	return xxx_messageInfo_Milestone.Size(m)
-}
-func (m *Milestone) XXX_DiscardUnknown() {
-	xxx_messageInfo_Milestone.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Milestone proto.InternalMessageInfo
-
-func (m *Milestone) GetLabel() string {
-	if m != nil {
-		return m.Label
-	}
-	return ""
-}
-
-func (m *Milestone) GetTimestamp() int64 {
+func (m *Event) GetTimestamp() int64 {
 	if m != nil {
 		return m.Timestamp
 	}
 	return 0
 }
 
-func (m *Milestone) GetOrigin() string {
+type Trace struct {
+	Events               []*Event `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Trace) Reset()         { *m = Trace{} }
+func (m *Trace) String() string { return proto.CompactTextString(m) }
+func (*Trace) ProtoMessage()    {}
+func (*Trace) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6d422d7c66fbbd8f, []int{1}
+}
+
+func (m *Trace) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Trace.Unmarshal(m, b)
+}
+func (m *Trace) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Trace.Marshal(b, m, deterministic)
+}
+func (m *Trace) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Trace.Merge(m, src)
+}
+func (m *Trace) XXX_Size() int {
+	return xxx_messageInfo_Trace.Size(m)
+}
+func (m *Trace) XXX_DiscardUnknown() {
+	xxx_messageInfo_Trace.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Trace proto.InternalMessageInfo
+
+func (m *Trace) GetEvents() []*Event {
 	if m != nil {
-		return m.Origin
-	}
-	return ""
-}
-
-func (m *Milestone) GetType() Milestone_MilestoneType {
-	if m != nil {
-		return m.Type
-	}
-	return Milestone_UNKNOWN
-}
-
-type ContextCall struct {
-	Properties           *ContextProperties `protobuf:"bytes,1,opt,name=properties,proto3" json:"properties,omitempty"`
-	Milestones           []*Milestone       `protobuf:"bytes,2,rep,name=milestones,proto3" json:"milestones,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
-}
-
-func (m *ContextCall) Reset()         { *m = ContextCall{} }
-func (m *ContextCall) String() string { return proto.CompactTextString(m) }
-func (*ContextCall) ProtoMessage()    {}
-func (*ContextCall) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6d422d7c66fbbd8f, []int{2}
-}
-
-func (m *ContextCall) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ContextCall.Unmarshal(m, b)
-}
-func (m *ContextCall) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ContextCall.Marshal(b, m, deterministic)
-}
-func (m *ContextCall) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContextCall.Merge(m, src)
-}
-func (m *ContextCall) XXX_Size() int {
-	return xxx_messageInfo_ContextCall.Size(m)
-}
-func (m *ContextCall) XXX_DiscardUnknown() {
-	xxx_messageInfo_ContextCall.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ContextCall proto.InternalMessageInfo
-
-func (m *ContextCall) GetProperties() *ContextProperties {
-	if m != nil {
-		return m.Properties
-	}
-	return nil
-}
-
-func (m *ContextCall) GetMilestones() []*Milestone {
-	if m != nil {
-		return m.Milestones
+		return m.Events
 	}
 	return nil
 }
 
 type RecordRequest struct {
-	Properties           *ContextProperties `protobuf:"bytes,1,opt,name=properties,proto3" json:"properties,omitempty"`
-	Milestone            *Milestone         `protobuf:"bytes,2,opt,name=milestone,proto3" json:"milestone,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
-	XXX_unrecognized     []byte             `json:"-"`
-	XXX_sizecache        int32              `json:"-"`
+	Event                *Event   `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *RecordRequest) Reset()         { *m = RecordRequest{} }
 func (m *RecordRequest) String() string { return proto.CompactTextString(m) }
 func (*RecordRequest) ProtoMessage()    {}
 func (*RecordRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6d422d7c66fbbd8f, []int{3}
+	return fileDescriptor_6d422d7c66fbbd8f, []int{2}
 }
 
 func (m *RecordRequest) XXX_Unmarshal(b []byte) error {
@@ -295,16 +148,9 @@ func (m *RecordRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RecordRequest proto.InternalMessageInfo
 
-func (m *RecordRequest) GetProperties() *ContextProperties {
+func (m *RecordRequest) GetEvent() *Event {
 	if m != nil {
-		return m.Properties
-	}
-	return nil
-}
-
-func (m *RecordRequest) GetMilestone() *Milestone {
-	if m != nil {
-		return m.Milestone
+		return m.Event
 	}
 	return nil
 }
@@ -319,7 +165,7 @@ func (m *RecordResponse) Reset()         { *m = RecordResponse{} }
 func (m *RecordResponse) String() string { return proto.CompactTextString(m) }
 func (*RecordResponse) ProtoMessage()    {}
 func (*RecordResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6d422d7c66fbbd8f, []int{4}
+	return fileDescriptor_6d422d7c66fbbd8f, []int{3}
 }
 
 func (m *RecordResponse) XXX_Unmarshal(b []byte) error {
@@ -341,8 +187,6 @@ func (m *RecordResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_RecordResponse proto.InternalMessageInfo
 
 type TraceRequest struct {
-	Creator              string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Label                string   `protobuf:"bytes,2,opt,name=label,proto3" json:"label,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -352,7 +196,7 @@ func (m *TraceRequest) Reset()         { *m = TraceRequest{} }
 func (m *TraceRequest) String() string { return proto.CompactTextString(m) }
 func (*TraceRequest) ProtoMessage()    {}
 func (*TraceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6d422d7c66fbbd8f, []int{5}
+	return fileDescriptor_6d422d7c66fbbd8f, []int{4}
 }
 
 func (m *TraceRequest) XXX_Unmarshal(b []byte) error {
@@ -373,32 +217,18 @@ func (m *TraceRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TraceRequest proto.InternalMessageInfo
 
-func (m *TraceRequest) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *TraceRequest) GetLabel() string {
-	if m != nil {
-		return m.Label
-	}
-	return ""
-}
-
 type TraceResponse struct {
-	Calls                []*ContextCall `protobuf:"bytes,1,rep,name=calls,proto3" json:"calls,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	Traces               []*Trace `protobuf:"bytes,1,rep,name=traces,proto3" json:"traces,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *TraceResponse) Reset()         { *m = TraceResponse{} }
 func (m *TraceResponse) String() string { return proto.CompactTextString(m) }
 func (*TraceResponse) ProtoMessage()    {}
 func (*TraceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6d422d7c66fbbd8f, []int{6}
+	return fileDescriptor_6d422d7c66fbbd8f, []int{5}
 }
 
 func (m *TraceResponse) XXX_Unmarshal(b []byte) error {
@@ -419,18 +249,16 @@ func (m *TraceResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TraceResponse proto.InternalMessageInfo
 
-func (m *TraceResponse) GetCalls() []*ContextCall {
+func (m *TraceResponse) GetTraces() []*Trace {
 	if m != nil {
-		return m.Calls
+		return m.Traces
 	}
 	return nil
 }
 
 func init() {
-	proto.RegisterEnum("tracer.Milestone_MilestoneType", Milestone_MilestoneType_name, Milestone_MilestoneType_value)
-	proto.RegisterType((*ContextProperties)(nil), "tracer.ContextProperties")
-	proto.RegisterType((*Milestone)(nil), "tracer.Milestone")
-	proto.RegisterType((*ContextCall)(nil), "tracer.ContextCall")
+	proto.RegisterType((*Event)(nil), "tracer.Event")
+	proto.RegisterType((*Trace)(nil), "tracer.Trace")
 	proto.RegisterType((*RecordRequest)(nil), "tracer.RecordRequest")
 	proto.RegisterType((*RecordResponse)(nil), "tracer.RecordResponse")
 	proto.RegisterType((*TraceRequest)(nil), "tracer.TraceRequest")
@@ -440,39 +268,23 @@ func init() {
 func init() { proto.RegisterFile("tracer.proto", fileDescriptor_6d422d7c66fbbd8f) }
 
 var fileDescriptor_6d422d7c66fbbd8f = []byte{
-	// 501 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x53, 0x4d, 0x6f, 0xd3, 0x40,
-	0x10, 0xad, 0x9d, 0xd8, 0x21, 0x93, 0x0f, 0xb9, 0x43, 0x5b, 0x99, 0x0a, 0x89, 0xc8, 0xa7, 0x70,
-	0x29, 0x22, 0x95, 0x90, 0xca, 0x01, 0x29, 0x4a, 0x8d, 0x84, 0x4a, 0x5d, 0xb4, 0x75, 0x05, 0x37,
-	0xe4, 0xda, 0xa3, 0xb2, 0x92, 0x63, 0x9b, 0xf5, 0x52, 0x51, 0xf5, 0xc6, 0x89, 0x7f, 0xc0, 0x2f,
-	0xe1, 0xff, 0x21, 0xaf, 0xbd, 0x71, 0x9a, 0x96, 0x53, 0x6f, 0x3b, 0x4f, 0xf3, 0xde, 0xcc, 0x9b,
-	0x99, 0x85, 0xa1, 0x14, 0x51, 0x4c, 0xe2, 0xa0, 0x10, 0xb9, 0xcc, 0xd1, 0xae, 0x23, 0xef, 0xaf,
-	0x01, 0xdb, 0x8b, 0x3c, 0x93, 0xf4, 0x53, 0x7e, 0x12, 0x79, 0x41, 0x42, 0x72, 0x2a, 0x71, 0x0c,
-	0x26, 0x4f, 0x5c, 0x63, 0x62, 0x4c, 0xfb, 0xcc, 0xe4, 0x09, 0xba, 0xd0, 0x8b, 0x05, 0x45, 0x92,
-	0x12, 0xd7, 0x9c, 0x18, 0xd3, 0x0e, 0xd3, 0x21, 0x22, 0x74, 0x13, 0x4e, 0x89, 0xdb, 0x51, 0xb0,
-	0x7a, 0xe3, 0x1e, 0xd8, 0xb9, 0xe0, 0x57, 0x3c, 0x73, 0xbb, 0x4a, 0xa1, 0x89, 0x70, 0x07, 0xac,
-	0x34, 0xba, 0xa4, 0xd4, 0xb5, 0x14, 0x5c, 0x07, 0xf8, 0x1c, 0xfa, 0x09, 0xa5, 0xfc, 0x9a, 0x04,
-	0x25, 0xae, 0x3d, 0x31, 0xa6, 0x4f, 0x58, 0x0b, 0x54, 0x5a, 0x29, 0x65, 0x57, 0xf2, 0x9b, 0xdb,
-	0x53, 0x15, 0x9a, 0xc8, 0xfb, 0x63, 0x42, 0xff, 0x94, 0xa7, 0x54, 0xca, 0x3c, 0xa3, 0x56, 0xd9,
-	0xdc, 0x50, 0x96, 0x7c, 0x49, 0xa5, 0x8c, 0x96, 0x45, 0xd3, 0x60, 0x0b, 0xfc, 0xb7, 0xcb, 0x43,
-	0xe8, 0xca, 0x9b, 0x82, 0x54, 0x93, 0xe3, 0xd9, 0x8b, 0x83, 0x66, 0x6c, 0xab, 0x62, 0xed, 0x2b,
-	0xbc, 0x29, 0x88, 0xa9, 0x64, 0xef, 0xb7, 0x01, 0xa3, 0x3b, 0x38, 0x0e, 0xa0, 0x77, 0x11, 0x9c,
-	0x04, 0x67, 0x9f, 0x03, 0x67, 0x0b, 0xfb, 0x60, 0x9d, 0x87, 0x73, 0x16, 0x3a, 0x06, 0x22, 0x8c,
-	0xd5, 0xf3, 0xeb, 0xfb, 0x8b, 0x60, 0x11, 0x7e, 0x38, 0x0b, 0x1c, 0x13, 0x1d, 0x18, 0xfa, 0xc1,
-	0x71, 0x8b, 0x74, 0xb0, 0x07, 0x1d, 0x3f, 0x38, 0x76, 0xba, 0x08, 0x60, 0x9f, 0xce, 0xd9, 0x89,
-	0xcf, 0x1c, 0xab, 0xa5, 0xfa, 0x5f, 0x42, 0x9f, 0x05, 0xf3, 0x8f, 0x8e, 0xad, 0xa9, 0x2b, 0xa4,
-	0xe7, 0xdd, 0xc2, 0xa0, 0x59, 0xe8, 0x22, 0x4a, 0x53, 0x3c, 0x02, 0x28, 0x56, 0x8b, 0x55, 0x2b,
-	0x1d, 0xcc, 0x9e, 0x69, 0x53, 0xf7, 0x36, 0xcf, 0xd6, 0x92, 0xf1, 0x35, 0xc0, 0x52, 0x7b, 0x2a,
-	0x5d, 0x73, 0xd2, 0x99, 0x0e, 0x66, 0xdb, 0xf7, 0xe6, 0xc1, 0xd6, 0x92, 0xbc, 0x5b, 0x18, 0x31,
-	0x8a, 0x73, 0x91, 0x30, 0xfa, 0xfe, 0x83, 0x4a, 0xf9, 0x98, 0xf2, 0xaf, 0xa0, 0xbf, 0x52, 0x56,
-	0x8b, 0x7d, 0xb0, 0x7a, 0x9b, 0xe3, 0x39, 0x30, 0xd6, 0xc5, 0xcb, 0x22, 0xcf, 0x4a, 0xf2, 0xde,
-	0xc1, 0x30, 0xac, 0x08, 0xba, 0x1b, 0x7d, 0xc7, 0xb9, 0x68, 0x8e, 0x5b, 0x87, 0x0f, 0x5f, 0x90,
-	0xf7, 0x16, 0x46, 0x0d, 0xbf, 0x16, 0xc4, 0x97, 0x60, 0xc5, 0x51, 0x9a, 0x56, 0x4e, 0xaa, 0x69,
-	0x3c, 0xdd, 0x70, 0x52, 0x4d, 0x9c, 0xd5, 0x19, 0xb3, 0x5f, 0x46, 0x43, 0x16, 0xe7, 0x24, 0xae,
-	0x79, 0x4c, 0x78, 0x04, 0x76, 0xdd, 0x1f, 0xee, 0x6a, 0xde, 0x9d, 0x61, 0xed, 0xef, 0x6d, 0xc2,
-	0x8d, 0x8d, 0x2d, 0x7c, 0x03, 0x96, 0xd2, 0xc2, 0x1d, 0x9d, 0xb2, 0xee, 0x6b, 0x7f, 0x77, 0x03,
-	0xd5, 0xbc, 0x4b, 0x5b, 0xfd, 0xf6, 0xc3, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x37, 0x15, 0x69,
-	0xeb, 0xfd, 0x03, 0x00, 0x00,
+	// 247 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x51, 0xcd, 0x4a, 0xc3, 0x40,
+	0x10, 0x76, 0x13, 0x13, 0xe8, 0xd8, 0x04, 0x19, 0xac, 0x04, 0xf1, 0x10, 0x56, 0x84, 0x9c, 0x72,
+	0xa8, 0x52, 0xf0, 0x01, 0x3c, 0x78, 0x5d, 0x7d, 0x81, 0x98, 0xcc, 0x21, 0xd0, 0x36, 0x71, 0x77,
+	0xed, 0x03, 0xf8, 0xe4, 0x92, 0xd9, 0x09, 0xa5, 0xed, 0x6d, 0xe7, 0xfb, 0xe6, 0xfb, 0x61, 0x07,
+	0x96, 0xde, 0x36, 0x2d, 0xd9, 0x7a, 0xb4, 0x83, 0x1f, 0x30, 0x0d, 0x93, 0xfe, 0x80, 0xe4, 0xfd,
+	0x40, 0x7b, 0x8f, 0x39, 0x44, 0x7d, 0x57, 0xa8, 0x52, 0x55, 0x0b, 0x13, 0xf5, 0x1d, 0x22, 0x5c,
+	0xb7, 0xcd, 0x76, 0x5b, 0x44, 0x8c, 0xf0, 0x1b, 0x1f, 0x61, 0xe1, 0xfb, 0x1d, 0x39, 0xdf, 0xec,
+	0xc6, 0x22, 0x2e, 0x55, 0x15, 0x9b, 0x23, 0xa0, 0x6b, 0x48, 0xbe, 0x26, 0x53, 0x7c, 0x86, 0x94,
+	0x26, 0x4f, 0x57, 0xa8, 0x32, 0xae, 0x6e, 0xd6, 0x59, 0x2d, 0xd1, 0x9c, 0x64, 0x84, 0xd4, 0xaf,
+	0x90, 0x19, 0x6a, 0x07, 0xdb, 0x19, 0xfa, 0xf9, 0x25, 0xe7, 0xf1, 0x09, 0x12, 0xa6, 0xb8, 0xc5,
+	0x85, 0x2c, 0x70, 0xfa, 0x16, 0xf2, 0x59, 0xe5, 0xc6, 0x61, 0xef, 0x48, 0xe7, 0xb0, 0xe4, 0x5c,
+	0xb1, 0xd1, 0x1b, 0xc8, 0x64, 0x0e, 0x0b, 0x53, 0x1f, 0x76, 0xba, 0xe8, 0x13, 0xd6, 0x84, 0x5c,
+	0xff, 0x29, 0x11, 0xda, 0x4f, 0xb2, 0x87, 0xbe, 0x25, 0x7c, 0x83, 0x34, 0x64, 0xe1, 0x6a, 0x96,
+	0x9c, 0x34, 0x7e, 0xb8, 0x3f, 0x87, 0xa5, 0xd2, 0x15, 0x6e, 0xe6, 0xcf, 0xb8, 0x3b, 0x0d, 0x13,
+	0xe1, 0xea, 0x0c, 0x9d, 0x75, 0xdf, 0x29, 0x9f, 0xe7, 0xe5, 0x3f, 0x00, 0x00, 0xff, 0xff, 0x34,
+	0x4c, 0xbb, 0x2b, 0xae, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.

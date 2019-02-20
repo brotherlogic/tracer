@@ -5,14 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"strconv"
 	"sync"
-	"time"
+	"unsafe"
 
-	pbgh "github.com/brotherlogic/githubcard/proto"
 	"github.com/brotherlogic/goserver"
 	pbg "github.com/brotherlogic/goserver/proto"
-	"github.com/brotherlogic/goserver/utils"
 	"github.com/brotherlogic/keystore/client"
 	pb "github.com/brotherlogic/tracer/proto"
 	"golang.org/x/net/context"
@@ -22,35 +19,16 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls            map[string]*pb.ContextCall
-	callsMutex       *sync.Mutex
-	silencedAlerts   int
-	whitelist        []string
-	longestDelivered int64
-	timeOfLongest    time.Duration
-	unbalanced       int64
-	reject           bool
+	calls      map[string]*pb.Trace
+	callsMutex *sync.Mutex
 }
 
 // Init builds the server
 func Init() *Server {
 	s := &Server{
 		&goserver.GoServer{},
-		make(map[string]*pb.ContextCall),
+		make(map[string]*pb.Trace),
 		&sync.Mutex{},
-		0,
-		[]string{
-			"dropboxsync",
-			"wantslist",
-			"recordprinter",
-			"cdprocessor",
-			"backup",
-			"printer",
-		},
-		int64(0),
-		0,
-		int64(0), // unbalanced
-		true,     // Rejects everything
 	}
 	return s
 }
@@ -80,57 +58,10 @@ func (s *Server) GetState() []*pbg.State {
 	s.callsMutex.Lock()
 	defer s.callsMutex.Unlock()
 
-	count := 0
-	for _, c := range s.calls {
-		if c.Properties.Died == 0 && c.Properties.Created == 0 {
-			count++
-		}
-	}
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
-		&pbg.State{Key: "unfinished_calls", Value: int64(count)},
-		&pbg.State{Key: "silenced_alerts", Value: int64(s.silencedAlerts)},
-		&pbg.State{Key: "num_whitelisted", Value: int64(len(s.whitelist))},
-		&pbg.State{Key: "longest_delivered", Value: s.longestDelivered},
-		&pbg.State{Key: "time_of_longest", TimeDuration: s.timeOfLongest.Nanoseconds()},
-		&pbg.State{Key: "rejecting", Text: fmt.Sprintf("%v", s.reject)},
+		&pbg.State{Key: "size", Value: int64(unsafe.Sizeof(s.calls))},
 	}
-}
-
-func (s *Server) buildLong(call *pb.ContextCall) string {
-	retstring := fmt.Sprintf("%v - %v\n", call.GetProperties().Id, (call.Properties.Length)/1000000)
-	for _, m := range call.GetMilestones() {
-		retstring += fmt.Sprintf("[%v] - %v (%v)\n", (m.GetTimestamp()-call.Properties.Created)/1000000, m.GetLabel(), m.GetType())
-	}
-
-	return retstring
-}
-
-func (s *Server) findLongest(ctx context.Context) {
-	longest := s.getLongContextCall(ctx)
-	if longest != nil && (longest.Properties.Length)/1000000 >= 500 {
-		ip, port, _ := utils.Resolve("githubcard")
-		if port > 0 {
-			conn, err := grpc.Dial(ip+":"+strconv.Itoa(int(port)), grpc.WithInsecure())
-			if err == nil {
-				defer conn.Close()
-				client := pbgh.NewGithubClient(conn)
-				client.AddIssue(ctx, &pbgh.Issue{Service: longest.Properties.Origin, Title: "Long", Body: fmt.Sprintf("%v", s.buildLong(longest))}, grpc.FailFast(false))
-				longest.Properties.Delivered = true
-				s.longestDelivered++
-				s.timeOfLongest = time.Duration(longest.Properties.Length)
-			}
-		}
-	} else if longest != nil {
-		s.Log(fmt.Sprintf("Rejecting %v because of length %v", longest.Properties.Origin, longest.Properties.Length))
-	}
-
-	//Wipe the registry clean
-	s.callsMutex.Lock()
-	for key := range s.calls {
-		delete(s.calls, key)
-	}
-	s.callsMutex.Unlock()
 }
 
 func main() {
@@ -148,8 +79,6 @@ func main() {
 	server.Register = server
 
 	server.RegisterServer("tracer", false)
-
-	server.RegisterRepeatingTask(server.findLongest, "find_longest", time.Minute*5)
 
 	fmt.Printf("%v\n", server.Serve())
 }
