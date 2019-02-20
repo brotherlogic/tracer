@@ -9,7 +9,17 @@ import (
 
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
-	return nil, fmt.Errorf("Not implemented")
+	s.callsMutex.Lock()
+	defer s.callsMutex.Unlock()
+
+	val, ok := s.calls[req.Event.Id]
+	if !ok {
+		s.calls[req.Event.Id] = &pb.Trace{Events: []*pb.Event{req.Event}}
+	} else {
+		val.Events = append(val.Events, req.Event)
+	}
+
+	return &pb.RecordResponse{}, nil
 }
 
 //Trace pulls out a trace

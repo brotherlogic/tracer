@@ -7,13 +7,16 @@ import (
 	pb "github.com/brotherlogic/tracer/proto"
 )
 
-func TestSimpleFlow(t *testing.T) {
+func TestRecord(t *testing.T) {
 	s := InitTestServer()
-
-	s.Record(context.Background(), &pb.RecordRequest{})
-	resp, err := s.Trace(context.Background(), &pb.TraceRequest{})
-
-	if err == nil {
-		t.Errorf("Error running trace: %v", resp)
+	a, err := s.Record(context.Background(), &pb.RecordRequest{Event: &pb.Event{Id: "test"}})
+	if err != nil {
+		t.Errorf("Full reject was not rejected: %v", a)
 	}
+
+	a, err = s.Record(context.Background(), &pb.RecordRequest{Event: &pb.Event{Id: "test"}})
+	if err != nil {
+		t.Errorf("Full reject was not rejected: %v", a)
+	}
+
 }
