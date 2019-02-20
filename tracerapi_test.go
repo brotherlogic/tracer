@@ -13,14 +13,6 @@ func InitTestServer() *Server {
 	return s
 }
 
-func TestRecord(t *testing.T) {
-	s := InitTestServer()
-	a, err := s.Record(context.Background(), &pb.RecordRequest{})
-	if err == nil {
-		t.Errorf("Full reject was not rejected: %v", a)
-	}
-}
-
 func TestTrace(t *testing.T) {
 	s := InitTestServer()
 	a, err := s.Trace(context.Background(), &pb.TraceRequest{})
