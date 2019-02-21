@@ -19,4 +19,12 @@ func TestRecord(t *testing.T) {
 		t.Errorf("Full reject was not rejected: %v", a)
 	}
 
+	b, err := s.Trace(context.Background(), &pb.TraceRequest{Id: "test"})
+	if err != nil {
+		t.Errorf("Bad Trace: %v", err)
+	}
+
+	if len(b.Traces[0].Events) != 2 {
+		t.Errorf("Bad trace: %v", b.Traces[0])
+	}
 }

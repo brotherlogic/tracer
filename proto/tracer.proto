@@ -18,7 +18,9 @@ message RecordRequest {
 
 message RecordResponse {}
 
-message TraceRequest{}
+message TraceRequest{
+  string id = 1;
+}
 
 message TraceResponse {
   repeated Trace traces = 1;
