@@ -24,5 +24,13 @@ func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordR
 
 //Trace pulls out a trace
 func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResponse, error) {
-	return nil, fmt.Errorf("Not implemented")
+	s.callsMutex.Lock()
+	defer s.callsMutex.Unlock()
+
+	val, ok := s.calls[req.Id]
+	if ok {
+		return &pb.TraceResponse{Traces: []*pb.Trace{val}}, nil
+	}
+
+	return nil, fmt.Errorf("Unable to find trace with that id: %v", req.Id)
 }
