@@ -58,13 +58,16 @@ func (s *Server) GetState() []*pbg.State {
 	defer s.callsMutex.Unlock()
 
 	count := int64(0)
-	for _, c := range s.calls {
+	key := ""
+	for k, c := range s.calls {
 		count += int64(len(c.Events))
+		key = k
 	}
 
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "size", Value: count},
+		&pbg.State{Key: "sample_key", Text: key},
 	}
 }
 

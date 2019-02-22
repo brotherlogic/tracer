@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -31,7 +32,21 @@ func main() {
 	defer cancel()
 
 	switch os.Args[1] {
-	default:
-		client.Trace(ctx, &pb.TraceRequest{Id: os.Args[2]})
+	case "trace":
+		val, err := client.Trace(ctx, &pb.TraceRequest{Id: os.Args[2]})
+		if err != nil {
+			log.Fatalf("Failed on trace request: %v", err)
+		}
+		if len(val.Traces) == 0 {
+			fmt.Printf("No traces match!")
+		}
+		if len(val.Traces[0].Events) == 0 {
+			fmt.Printf("No events in trace")
+		}
+		for _, event := range val.Traces[0].Events {
+			fmt.Printf("Event: %v\n", event)
+		}
+	case "default":
+		fmt.Printf("Unknown command\n")
 	}
 }
