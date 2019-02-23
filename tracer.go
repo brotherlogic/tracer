@@ -87,5 +87,7 @@ func main() {
 
 	server.RegisterServer("tracer", false)
 
+	server.SendTrace = false
+
 	fmt.Printf("%v\n", server.Serve())
 }
