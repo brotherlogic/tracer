@@ -9,27 +9,23 @@ import (
 
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
-	s.callsMutex.Lock()
-	defer s.callsMutex.Unlock()
-
-	val, ok := s.calls[req.Event.Id]
-	if !ok {
-		s.calls[req.Event.Id] = &pb.Trace{Events: []*pb.Event{req.Event}}
-	} else {
-		val.Events = append(val.Events, req.Event)
+	for _, entry := range s.calls {
+		if entry.Events[0].Id == req.Event.Id {
+			entry.Events = append(entry.Events, req.Event)
+			return &pb.RecordResponse{}, nil
+		}
 	}
 
+	s.calls = append(s.calls, &pb.Trace{Events: []*pb.Event{req.Event}})
 	return &pb.RecordResponse{}, nil
 }
 
 //Trace pulls out a trace
 func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResponse, error) {
-	s.callsMutex.Lock()
-	defer s.callsMutex.Unlock()
-
-	val, ok := s.calls[req.Id]
-	if ok {
-		return &pb.TraceResponse{Traces: []*pb.Trace{val}}, nil
+	for _, entry := range s.calls {
+		if entry.Events[0].Id == req.Id {
+			return &pb.TraceResponse{Traces: []*pb.Trace{entry}}, nil
+		}
 	}
 
 	return nil, fmt.Errorf("Unable to find trace with that id: %v", req.Id)

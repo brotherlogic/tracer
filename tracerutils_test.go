@@ -2,8 +2,11 @@ package main
 
 import (
 	"testing"
+
+	"golang.org/x/net/context"
 )
 
-func TestBlank(t *testing.T) {
-	blank()
+func TestClean(t *testing.T) {
+	s := InitTestServer()
+	s.clean(context.Background())
 }
