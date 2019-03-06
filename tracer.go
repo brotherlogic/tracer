@@ -54,20 +54,8 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
-	s.callsMutex.Lock()
-	defer s.callsMutex.Unlock()
-
-	count := int64(0)
-	key := ""
-	for k, c := range s.calls {
-		count += int64(len(c.Events))
-		key = k
-	}
-
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
-		&pbg.State{Key: "size", Value: count},
-		&pbg.State{Key: "sample_key", Text: key},
 	}
 }
 
