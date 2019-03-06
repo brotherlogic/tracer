@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"sync"
+	"time"
 
 	"github.com/brotherlogic/goserver"
 	pbg "github.com/brotherlogic/goserver/proto"
@@ -18,16 +18,14 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls      map[string]*pb.Trace
-	callsMutex *sync.Mutex
+	calls []*pb.Trace
 }
 
 // Init builds the server
 func Init() *Server {
 	s := &Server{
 		&goserver.GoServer{},
-		make(map[string]*pb.Trace),
-		&sync.Mutex{},
+		nil,
 	}
 	return s
 }
@@ -74,6 +72,8 @@ func main() {
 	server.Register = server
 
 	server.RegisterServer("tracer", false)
+
+	server.RegisterRepeatingTask(server.clean, "clean", time.Minute*5)
 
 	server.SendTrace = false
 
