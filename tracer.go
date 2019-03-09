@@ -18,7 +18,10 @@ import (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	calls []*pb.Trace
+	calls      []*pb.Trace
+	counts     map[string]int
+	mostCalled string
+	allCalls   int64
 }
 
 // Init builds the server
@@ -26,6 +29,9 @@ func Init() *Server {
 	s := &Server{
 		&goserver.GoServer{},
 		nil,
+		make(map[string]int),
+		"",
+		int64(0),
 	}
 	return s
 }
@@ -54,6 +60,8 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
+		&pbg.State{Key: "most_calls", Text: s.mostCalled},
+		&pbg.State{Key: "all_calls", Value: s.allCalls},
 	}
 }
 
