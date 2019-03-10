@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"golang.org/x/net/context"
@@ -35,6 +36,7 @@ func (s *Server) clean(ctx context.Context) {
 		}
 	}
 
+	s.Log(fmt.Sprintf("Most calls: %v", mostCalls))
 	s.allCalls = int64(allCalls)
 	s.mostCalled = most
 }
