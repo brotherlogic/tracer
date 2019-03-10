@@ -13,7 +13,7 @@ func (s *Server) clean(ctx context.Context) {
 
 	for _, events := range process {
 		eventStart := ""
-		times := time.Now().Unix()
+		times := time.Now().UnixNano()
 
 		for _, ev := range events.Events {
 			if ev.Timestamp < times {
