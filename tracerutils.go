@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
 	"golang.org/x/net/context"
@@ -39,4 +40,6 @@ func (s *Server) clean(ctx context.Context) {
 	s.Log(fmt.Sprintf("Most calls: %v", mostCalls))
 	s.allCalls = int64(allCalls)
 	s.mostCalled = most
+
+	s.Log(fmt.Sprintf("Calls: %v", reflect.ValueOf(s.counts).MapKeys()))
 }
