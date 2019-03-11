@@ -58,10 +58,12 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
+	count := int64(s.counts["/recordmover.MoveService/RecordMove"])
 	return []*pbg.State{
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "most_calls", Text: s.mostCalled},
 		&pbg.State{Key: "all_calls", Value: s.allCalls},
+		&pbg.State{Key: "temp", Value: count},
 	}
 }
 
