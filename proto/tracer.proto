@@ -26,7 +26,14 @@ message TraceResponse {
   repeated Trace traces = 1;
 }
 
+message MarkRequest {
+  string long_running_id = 1;
+}
+
+message MarkResponse {}
+
 service TracerService {
   rpc Record(RecordRequest) returns (RecordResponse) {};
   rpc Trace(TraceRequest) returns (TraceResponse) {};
+  rpc Mark(MarkRequest) returns (MarkResponse) {};
 }
