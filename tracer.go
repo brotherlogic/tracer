@@ -22,6 +22,7 @@ type Server struct {
 	counts     map[string]int
 	mostCalled string
 	allCalls   int64
+	markedIds  []string
 }
 
 // Init builds the server
@@ -32,6 +33,7 @@ func Init() *Server {
 		make(map[string]int),
 		"",
 		int64(0),
+		make([]string, 0),
 	}
 	return s
 }
@@ -64,6 +66,7 @@ func (s *Server) GetState() []*pbg.State {
 		&pbg.State{Key: "most_calls", Text: s.mostCalled},
 		&pbg.State{Key: "all_calls", Value: s.allCalls},
 		&pbg.State{Key: "temp", Value: count},
+		&pbg.State{Key: "marked", Value: int64(len(s.markedIds))},
 	}
 }
 

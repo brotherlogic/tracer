@@ -30,3 +30,9 @@ func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResp
 
 	return nil, fmt.Errorf("Unable to find trace with that id: %v", req.Id)
 }
+
+//Mark marks a trace
+func (s *Server) Mark(ctx context.Context, req *pb.MarkRequest) (*pb.MarkResponse, error) {
+	s.markedIds = append(s.markedIds, req.LongRunningId)
+	return &pb.MarkResponse{}, nil
+}
