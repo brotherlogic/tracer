@@ -26,6 +26,15 @@ func (s *Server) clean(ctx context.Context) {
 		s.counts[eventStart]++
 	}
 
+	// Deal with long running calls
+	for _, events := range process {
+		for _, m := range s.markedIds {
+			if events.Events[0].Id == m {
+				s.RaiseIssue(ctx, "Long Running Trace", fmt.Sprintf("%v is long running", m), false)
+			}
+		}
+	}
+
 	most := ""
 	mostCalls := 0
 	allCalls := 0
