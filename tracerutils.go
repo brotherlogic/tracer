@@ -13,6 +13,18 @@ func (s *Server) clean(ctx context.Context) {
 	s.calls = nil
 
 	for _, events := range process {
+
+		for _, marked := range s.markedIds {
+			if events.Events[0].Id == marked {
+				list := events.Events[0].Call
+				for _, ev := range events.Events[1:] {
+					list += "\n" + ev.Call
+				}
+
+				s.RaiseIssue(ctx, "Long Running Trace", list, false)
+			}
+		}
+
 		eventStart := ""
 		times := time.Now().UnixNano()
 
