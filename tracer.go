@@ -22,7 +22,7 @@ type Server struct {
 	counts     map[string]int
 	mostCalled string
 	allCalls   int64
-	markedIds  []string
+	markedIds  []*pb.MarkRequest
 }
 
 // Init builds the server
@@ -33,7 +33,7 @@ func Init() *Server {
 		make(map[string]int),
 		"",
 		int64(0),
-		make([]string, 0),
+		make([]*pb.MarkRequest, 0),
 	}
 	return s
 }

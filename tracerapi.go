@@ -33,6 +33,6 @@ func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResp
 
 //Mark marks a trace
 func (s *Server) Mark(ctx context.Context, req *pb.MarkRequest) (*pb.MarkResponse, error) {
-	s.markedIds = append(s.markedIds, req.LongRunningId)
+	s.markedIds = append(s.markedIds, req)
 	return &pb.MarkResponse{}, nil
 }
