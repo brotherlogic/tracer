@@ -12,6 +12,7 @@ import (
 func TestClean(t *testing.T) {
 	s := InitTestServer()
 	s.Record(context.Background(), &pb.RecordRequest{Event: &pb.Event{Id: "blah", Call: "doubleblah", Timestamp: time.Now().Unix() - 1000}})
+	s.Record(context.Background(), &pb.RecordRequest{Event: &pb.Event{Id: "blah", Call: "doubleblah2", Timestamp: time.Now().Unix() - 500}})
 	s.Mark(context.Background(), &pb.MarkRequest{LongRunningId: "blah"})
 	s.clean(context.Background())
 }
