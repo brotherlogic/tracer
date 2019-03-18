@@ -22,6 +22,8 @@ func (s *Server) clean(ctx context.Context) {
 				}
 
 				s.RaiseIssue(ctx, "Long Running Trace", list, false)
+				s.config.LastMarkSent = time.Now().Unix()
+				s.save(ctx)
 			}
 		}
 

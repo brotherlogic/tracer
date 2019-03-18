@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package tracer;
 
+message Config {
+  int64 last_mark_sent = 1;
+}
+
 message Event {
   string id = 1;
   string call = 2;
