@@ -15,9 +15,15 @@ import (
 	"google.golang.org/grpc"
 )
 
+const (
+	//KEY is where we store config
+	KEY = "github.com/brotherlogic/tracer/config"
+)
+
 //Server main server type
 type Server struct {
 	*goserver.GoServer
+	config     *pb.Config
 	calls      []*pb.Trace
 	counts     map[string]int
 	mostCalled string
@@ -29,6 +35,7 @@ type Server struct {
 func Init() *Server {
 	s := &Server{
 		&goserver.GoServer{},
+		&pb.Config{},
 		nil,
 		make(map[string]int),
 		"",
@@ -36,6 +43,20 @@ func Init() *Server {
 		make([]*pb.MarkRequest, 0),
 	}
 	return s
+}
+
+func (s *Server) save(ctx context.Context) {
+	s.KSclient.Save(ctx, KEY, s.config)
+}
+
+func (s *Server) load(ctx context.Context) error {
+	config := &pb.Config{}
+	data, _, err := s.KSclient.Read(ctx, KEY, config)
+	if err != nil {
+		return err
+	}
+	s.config = data.(*pb.Config)
+	return nil
 }
 
 // DoRegister does RPC registration
@@ -55,12 +76,18 @@ func (s *Server) Shutdown(ctx context.Context) error {
 
 // Mote promotes/demotes this server
 func (s *Server) Mote(ctx context.Context, master bool) error {
+	if master {
+		err := s.load(ctx)
+		return err
+	}
+
 	return nil
 }
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
+		&pbg.State{Key: "last_mark", TimeValue: s.config.LastMarkSent},
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "most_calls", Text: s.mostCalled},
 		&pbg.State{Key: "all_calls", Value: s.allCalls},
@@ -68,6 +95,11 @@ func (s *Server) GetState() []*pbg.State {
 	}
 }
 
+func (s *Server) staleAlert(ctx context.Context) {
+	if time.Now().Sub(time.Unix(s.config.LastMarkSent, 0)) > time.Hour*24*7 {
+		s.RaiseIssue(ctx, "Adjust alert settings", fmt.Sprintf("Last mark alert was sent at %v", time.Unix(s.config.LastMarkSent, 0)), false)
+	}
+}
 func main() {
 	var quiet = flag.Bool("quiet", false, "Show all output")
 	flag.Parse()
@@ -85,6 +117,7 @@ func main() {
 	server.RegisterServer("tracer", false)
 
 	server.RegisterRepeatingTask(server.clean, "clean", time.Minute*5)
+	server.RegisterRepeatingTask(server.staleAlert, "stale_alert", time.Hour)
 
 	server.SendTrace = false
 

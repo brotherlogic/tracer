@@ -1,8 +1,10 @@
 package main
 
 import (
-	"context"
 	"testing"
+
+	"github.com/brotherlogic/keystore/client"
+	"golang.org/x/net/context"
 
 	pb "github.com/brotherlogic/tracer/proto"
 )
@@ -10,6 +12,7 @@ import (
 func InitTestServer() *Server {
 	s := Init()
 	s.SkipLog = true
+	s.GoServer.KSclient = *keystoreclient.GetTestClient("./testing")
 	return s
 }
 
