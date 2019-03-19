@@ -16,9 +16,9 @@ func (s *Server) clean(ctx context.Context) {
 
 		for _, marked := range s.markedIds {
 			if events.Events[0].Id == marked.LongRunningId {
-				list := events.Events[0].Call
+				list := fmt.Sprintf("%v/%v %v %v %v", events.Events[0].Server, events.Events[0].Binary, events.Events[0].Timestamp, events.Events[0].Call)
 				for _, ev := range events.Events[1:] {
-					list += "\n" + fmt.Sprintf("%v %v", ev.Timestamp, ev.Call)
+					list += "\n" + fmt.Sprintf("%v/%v %v %v", ev.Server, ev.Binary, ev.Timestamp-events.Events[0].Timestamp, ev.Call)
 				}
 
 				s.RaiseIssue(ctx, "Long Running Trace", list, false)

@@ -10,6 +10,8 @@ message Event {
   string id = 1;
   string call = 2;
   int64 timestamp = 3;
+  string server = 4;
+  string binary = 5;
 }
 
 message Trace {
