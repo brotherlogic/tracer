@@ -31,7 +31,7 @@ func (s *Server) clean(ctx context.Context) {
 		times := time.Now().UnixNano()
 
 		for _, ev := range events.Events {
-			if ev.Timestamp < times {
+			if ev != nil && ev.Timestamp < times {
 				times = ev.Timestamp
 				eventStart = ev.Call
 			}
