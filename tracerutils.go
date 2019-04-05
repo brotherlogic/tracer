@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func (s *Server) clean(ctx context.Context) {
+func (s *Server) clean(ctx context.Context) error {
 	process := s.calls
 	s.calls = nil
 
@@ -56,4 +56,6 @@ func (s *Server) clean(ctx context.Context) {
 	s.mostCalled = most
 
 	s.Log(fmt.Sprintf("Calls: %v", reflect.ValueOf(s.counts).MapKeys()))
+
+	return nil
 }
