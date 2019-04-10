@@ -10,9 +10,11 @@ import (
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
 	for _, entry := range s.calls {
-		if len(entry.Events) > 0 && entry.Events[0].Id == req.Event.Id {
-			entry.Events = append(entry.Events, req.Event)
-			return &pb.RecordResponse{}, nil
+		if entry != nil {
+			if len(entry.Events) > 0 && entry.Events[0].Id == req.Event.Id {
+				entry.Events = append(entry.Events, req.Event)
+				return &pb.RecordResponse{}, nil
+			}
 		}
 	}
 
