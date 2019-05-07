@@ -21,6 +21,8 @@ func (s *Server) clean(ctx context.Context) error {
 					list += "\n" + fmt.Sprintf("%v/%v %v %v", ev.Server, ev.Binary, ev.Timestamp-events.Events[0].Timestamp, ev.Call)
 				}
 
+				list += fmt.Sprintf("\nGenerated from %v", marked.LongRunningId)
+
 				s.RaiseIssue(ctx, "Long Running Trace", list, false)
 				s.config.LastMarkSent = time.Now().Unix()
 				s.save(ctx)
