@@ -29,6 +29,7 @@ type Server struct {
 	mostCalled string
 	allCalls   int64
 	markedIds  []*pb.MarkRequest
+	goodList   []string
 }
 
 // Init builds the server
@@ -41,6 +42,7 @@ func Init() *Server {
 		"",
 		int64(0),
 		make([]*pb.MarkRequest, 0),
+		[]string{"recordmatcher"},
 	}
 	return s
 }
@@ -87,6 +89,7 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
+		&pbg.State{Key: "good_list", Text: fmt.Sprintf("%v", s.goodList)},
 		&pbg.State{Key: "last_mark", TimeValue: s.config.LastMarkSent},
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "most_calls", Text: s.mostCalled},
