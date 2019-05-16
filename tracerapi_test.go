@@ -26,8 +26,16 @@ func TestTrace(t *testing.T) {
 
 func TestMark(t *testing.T) {
 	s := InitTestServer()
-	_, err := s.Mark(context.Background(), &pb.MarkRequest{LongRunningId: "blah"})
+	_, err := s.Mark(context.Background(), &pb.MarkRequest{LongRunningId: "blah", Origin: "recordmatcher"})
 	if err != nil {
 		t.Errorf("Full reject was not rejected: %v", err)
+	}
+}
+
+func TestMarkFail(t *testing.T) {
+	s := InitTestServer()
+	_, err := s.Mark(context.Background(), &pb.MarkRequest{LongRunningId: "blah", Origin: "madeup"})
+	if err == nil {
+		t.Errorf("Mark was not rejected")
 	}
 }
