@@ -42,7 +42,7 @@ func Init() *Server {
 		"",
 		int64(0),
 		make([]*pb.MarkRequest, 0),
-		[]string{"recordmatcher"},
+		[]string{"recordmatcher", "recordmover"},
 	}
 	return s
 }
