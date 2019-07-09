@@ -32,10 +32,12 @@ func (s *Server) clean(ctx context.Context) error {
 		eventStart := ""
 		times := time.Now().UnixNano()
 
-		for _, ev := range events.Events {
-			if ev != nil && ev.Timestamp < times {
-				times = ev.Timestamp
-				eventStart = ev.Call
+		if events.Events != nil {
+			for _, ev := range events.Events {
+				if ev != nil && ev.Timestamp < times {
+					times = ev.Timestamp
+					eventStart = ev.Call
+				}
 			}
 		}
 
