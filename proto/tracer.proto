@@ -36,6 +36,7 @@ message MarkRequest {
   string long_running_id = 1;
   int64 running_time_in_ms = 2;
   string origin = 3;
+  string request = 4;
 }
 
 message MarkResponse {}
