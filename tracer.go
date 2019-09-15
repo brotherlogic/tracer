@@ -125,6 +125,7 @@ func main() {
 	server.RegisterRepeatingTask(server.staleAlert, "stale_alert", time.Hour)
 
 	server.SendTrace = false
+	server.SkipLog = true
 
 	fmt.Printf("%v\n", server.Serve())
 }
