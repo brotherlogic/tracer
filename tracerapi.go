@@ -36,11 +36,6 @@ func (s *Server) Trace(ctx context.Context, req *pb.TraceRequest) (*pb.TraceResp
 
 //Mark marks a trace
 func (s *Server) Mark(ctx context.Context, req *pb.MarkRequest) (*pb.MarkResponse, error) {
-	for _, good := range s.goodList {
-		if req.Origin == good {
-			s.markedIds = append(s.markedIds, req)
-			return &pb.MarkResponse{}, nil
-		}
-	}
-	return nil, fmt.Errorf("%v is not listed in the good list", req.Origin)
+	s.markedIds = append(s.markedIds, req)
+	return &pb.MarkResponse{}, nil
 }

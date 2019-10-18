@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	host, port, err := utils.Resolve("tracer")
+	host, port, err := utils.Resolve("tracer", "tracer-cli")
 	if err != nil {
 		log.Fatalf("Unable to reach tracer: %v", err)
 	}
