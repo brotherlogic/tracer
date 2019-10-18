@@ -31,11 +31,3 @@ func TestMark(t *testing.T) {
 		t.Errorf("Full reject was not rejected: %v", err)
 	}
 }
-
-func TestMarkFail(t *testing.T) {
-	s := InitTestServer()
-	_, err := s.Mark(context.Background(), &pb.MarkRequest{LongRunningId: "blah", Origin: "madeup"})
-	if err == nil {
-		t.Errorf("Mark was not rejected")
-	}
-}
