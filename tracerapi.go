@@ -9,6 +9,9 @@ import (
 
 // Record record a trace
 func (s *Server) Record(ctx context.Context, req *pb.RecordRequest) (*pb.RecordResponse, error) {
+	if req.Event == nil {
+		return nil, fmt.Errorf("You sent an empty event")
+	}
 	for _, entry := range s.calls {
 		if entry != nil && req.Event != nil && entry.Events != nil {
 			if len(entry.Events) > 0 &&
