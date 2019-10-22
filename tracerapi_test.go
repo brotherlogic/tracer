@@ -24,6 +24,14 @@ func TestTrace(t *testing.T) {
 	}
 }
 
+func TestRecordFail(t *testing.T) {
+	s := InitTestServer()
+	a, err := s.Record(context.Background(), &pb.RecordRequest{})
+	if err == nil {
+		t.Errorf("Full reject was not rejected: %v", a)
+	}
+}
+
 func TestMark(t *testing.T) {
 	s := InitTestServer()
 	_, err := s.Mark(context.Background(), &pb.MarkRequest{LongRunningId: "blah", Origin: "recordmatcher"})
