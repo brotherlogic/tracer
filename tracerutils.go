@@ -12,7 +12,7 @@ func (s *Server) clean(ctx context.Context) error {
 	process := s.calls
 	s.calls = nil
 
-	s.Log(fmt.Sprintf("EVAL = %v", len(process)))
+	s.message = fmt.Sprintf("EVAL = %v", len(process))
 	for _, events := range process {
 
 		for _, marked := range s.markedIds {
