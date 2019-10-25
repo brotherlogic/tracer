@@ -12,10 +12,10 @@ func (s *Server) clean(ctx context.Context) error {
 	process := s.calls
 	s.calls = nil
 
-	s.message = fmt.Sprintf("EVAL = %v", len(process))
 	for _, events := range process {
 
 		for _, marked := range s.markedIds {
+			s.message = fmt.Sprintf("Mark = %v -> %v", marked.LongRunningId, events.Events[0].Id)
 			if events.Events[0].Id == marked.LongRunningId {
 				list := fmt.Sprintf("%v/%v %v %v %v [%v]", events.Events[0].Server, events.Events[0].Binary, events.Events[0].Timestamp, events.Events[0].Call, time.Millisecond*time.Duration(marked.RunningTimeInMs), marked.Request)
 				for _, ev := range events.Events[1:] {
