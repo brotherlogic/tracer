@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package tracer;
 
+  import "github.com/golang/protobuf/ptypes/any/any.proto";
+
 message Config {
   int64 last_mark_sent = 1;
 }
@@ -37,6 +39,7 @@ message MarkRequest {
   int64 running_time_in_ms = 2;
   string origin = 3;
   string request = 4;
+  google.protobuf.Any request_message = 5;
 }
 
 message MarkResponse {}
