@@ -16,11 +16,10 @@ func (s *Server) clean(ctx context.Context) error {
 
 		for _, marked := range s.markedIds {
 			if events.Events[0].Id == marked.LongRunningId {
-				s.message = fmt.Sprintf("Mark = %v -> %v", marked.LongRunningId, events.Events[0].Id)
 				list := fmt.Sprintf("%v/%v %v %v %v [%v]", events.Events[0].Server, events.Events[0].Binary, events.Events[0].Timestamp, events.Events[0].Call, time.Millisecond*time.Duration(marked.RunningTimeInMs), marked.Request)
 				list += fmt.Sprintf("\nRequest: %v", marked.RequestMessage)
-				for _, ev := range events.Events[1:] {
-					list += "\n" + fmt.Sprintf("%v/%v %v %v", ev.Server, ev.Binary, time.Millisecond*time.Duration(ev.Timestamp-events.Events[0].Timestamp), ev.Call)
+				for _, ev := range events.Events {
+					list += "\n" + fmt.Sprintf("%v/%v %v %v", ev.Server, ev.Binary, time.Nanosecond*time.Duration(ev.Timestamp-events.Events[0].Timestamp), ev.Call)
 				}
 
 				list += fmt.Sprintf("\nGenerated from %v", marked.LongRunningId)
