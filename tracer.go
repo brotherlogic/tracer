@@ -122,7 +122,7 @@ func main() {
 	server.PrepServer()
 	server.Register = server
 
-	server.RegisterServer("tracer", false)
+	server.RegisterServerV2("tracer", false, false)
 
 	server.RegisterRepeatingTask(server.clean, "clean", time.Minute*5)
 	server.RegisterRepeatingTask(server.staleAlert, "stale_alert", time.Hour)
