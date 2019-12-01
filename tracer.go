@@ -103,7 +103,7 @@ func (s *Server) GetState() []*pbg.State {
 
 func (s *Server) staleAlert(ctx context.Context) error {
 	if time.Now().Sub(time.Unix(s.config.LastMarkSent, 0)) > time.Hour*24*7 {
-		s.RaiseIssue(ctx, "Adjust alert settings", fmt.Sprintf("Last mark alert was sent at %v", time.Unix(s.config.LastMarkSent, 0)), false)
+		//s.RaiseIssue(ctx, "Adjust alert settings", fmt.Sprintf("Last mark alert was sent at %v", time.Unix(s.config.LastMarkSent, 0)), false)
 	}
 
 	return nil
