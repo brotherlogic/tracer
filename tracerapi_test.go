@@ -20,7 +20,7 @@ func InitTestServer() *Server {
 func TestTrace(t *testing.T) {
 	s := InitTestServer()
 	a, err := s.Trace(context.Background(), &pb.TraceRequest{})
-	if err == nil {
+	if err != nil {
 		t.Errorf("Full reject was not rejected: %v", a)
 	}
 }

@@ -26,6 +26,7 @@ message RecordResponse {}
 
 message TraceRequest{
   string id = 1;
+  string call = 2;
 }
 
 message TraceResponse {
