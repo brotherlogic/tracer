@@ -13,7 +13,6 @@ func (s *Server) clean(ctx context.Context) error {
 	s.calls = nil
 
 	for _, events := range process {
-
 		for _, marked := range s.markedIds {
 			if events.Events[0].Id == marked.LongRunningId {
 				list := fmt.Sprintf("%v/%v %v %v %v [%v]", events.Events[0].Server, events.Events[0].Binary, events.Events[0].Timestamp, events.Events[0].Call, time.Millisecond*time.Duration(marked.RunningTimeInMs), marked.Request)
