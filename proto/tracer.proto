@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package tracer;
 
+option go_package = ".;tracer";
+
 message Config {
   int64 last_mark_sent = 1;
 }
