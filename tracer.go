@@ -91,7 +91,6 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
-		&pbg.State{Key: "message", Text: s.message},
 		&pbg.State{Key: "good_list", Text: fmt.Sprintf("%v", s.goodList)},
 		&pbg.State{Key: "last_mark", TimeValue: s.config.LastMarkSent},
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
