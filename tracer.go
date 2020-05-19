@@ -95,7 +95,6 @@ func (s *Server) GetState() []*pbg.State {
 		&pbg.State{Key: "last_mark", TimeValue: s.config.LastMarkSent},
 		&pbg.State{Key: "calls", Value: int64(len(s.calls))},
 		&pbg.State{Key: "most_calls", Text: s.mostCalled},
-		&pbg.State{Key: "all_calls", Value: s.allCalls},
 		&pbg.State{Key: "marked", Value: int64(len(s.markedIds))},
 	}
 }
